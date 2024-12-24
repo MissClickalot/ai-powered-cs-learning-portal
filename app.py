@@ -1,5 +1,4 @@
-from flask import Flask
-from panel.io.notebook import render_template
+from flask import Flask, render_template
 
 # Create an instance of the Flask class for the app
 app = Flask(__name__)
