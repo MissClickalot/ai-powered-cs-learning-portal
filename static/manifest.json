@@ -1,0 +1,44 @@
+{
+  "name": "AI-powered Computer Science Learning Portal",
+  "short_name": "AI CS Learning",
+  "description": "The platform will incorporate Artificial Intelligence to guide users to relevant GCSE Computer Science educational resources regardless of their subject expertise.",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "icons/tiny.webp",
+      "sizes": "48x48"
+    },
+    {
+      "src": "icons/logo_48.png",
+      "sizes": "48x48",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/logo_72.png",
+      "sizes": "72x72",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/logo_192.png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/logo_256.png",
+      "sizes": "256x256",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/logo_512.png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/scalable.svg",
+      "sizes": "any"
+    }
+  ]
+}
