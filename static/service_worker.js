@@ -6,7 +6,8 @@ const APP_STATIC_RESOURCES = [
   "/",                       // Root route (served by Flask - index.html)
   "/static/manifest.json",   // Manifest file
   "/static/icons/scalable.svg", // Icon
-  // "/static/style.css",       // CSS file
+  "/static/assets/bootstrap/css/bootstrap.min.css", // Bootstrap CSS file
+  "/static/assets/bootstrap/js/bootstrap.min.js", // Bootstrap JS file
 ];
 
 // Install event to cache these resources
