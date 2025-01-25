@@ -1,71 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- Use the light bootstrap theme and set language to English -->
+<html data-bs-theme="light" lang="en">
     <head>
         <meta charset="UTF-8">
         <!--
         'width=device-width' sets the width of the viewport to match the device's screen width
         'initial-scale=1.0' sets the initial zoom level of the page to 1 (default scale), stops mobiles zooming out or displaying a desktop layout
         -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
         <title>Home - CS learning portal</title>
         <!-- Manifest (PWA) json -->
         <link rel="manifest" href="../static/manifest.json" />
         <!-- Icon to fallback to if manifest is not supported by the browser -->
         <link rel="icon" href="../static/icons/scalable.svg" />
-        <!-- Bootstrap 5 CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+        <!-- External Bootstrap 5 CSS stylesheets -->
+        <link rel="stylesheet" href="../static/assets/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../static/assets/css/Footer-Basic-icons.css">
     </head>
 
     <body>
-        <!-- Bootstrap 5 JavaScript -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <!-- Header section -->
+        <header>
+            <div class="container-fluid" style="margin-bottom: 8px; margin-top: 8px;">
+                <!-- Offcanvas menu button -->
+                <a class="d-flex justify-content-end" data-bs-target="#offcanvas-menu" data-bs-toggle="offcanvas">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-list text-body" style="font-size: 48px;">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"></path>
+                    </svg>
+                </a>
+            </div>
+        </header>
 
-        <!-- Menu button to toggle the sidebar -->
-        <button class="menu-button" onclick="toggleMenu()">
-            <i class="bi bi-list"></i>
-        </button>
+        <!-- Main content area -->
+        <div class="container">
+            <!-- Alert for new users -->
+            <div class="alert alert-light alert-dismissible me-0 pe-5" role="alert">
+                <button class="btn-close text-secondary" type="button" aria-label="Close" data-bs-dismiss="alert"></button>
+                <h4 class="alert-heading">Are you new here?</h4>
+                <span>Please&nbsp;</span><a class="alert-link" href="#">sign up</a><span>&nbsp;for an account. It's completely free and you'll have a much better experience!</span>
+            </div>
+        </div>
 
-        <!-- Sidebar menu -->
-        <nav id="menu">
-            <i class="bi bi-x menu-close" onclick="toggleMenu()"></i>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/how-to-use">How to use</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/feedback">Feedback</a></li>
-                <li><a href="/legal">Legal info</a></li>
-            </ul>
-        </nav>
+        <!-- Introductory content -->
+        <div class="container">
+            <h1>How can I help?</h1>
+            <p>Try asking 'What is binary?' or 'How do loops work in Python?'</p>
+        </div>
 
-        <h1>AI-powered CS Learning Portal</h1>
+        <!-- Input field for user queries -->
+        <div class="container">
+            <div class="row">
+                <!-- Text input for user questions -->
+                <div class="col-md-9 col-lg-10 col-xl-10 d-grid">
+                    <input class="form-control-lg" type="text" placeholder="What in Computer Science don't you understand?">
+                    <!-- Link to search history -->
+                    <a class="link-secondary" href="/history" title="View search history">
+                        <img src="../static/assets/bootstrap/bootstrap-icons/clock-history.svg" alt="History" style="width: 1em; height: 1em; margin-top: 8px; font-size: 24px;">
+                    </a>
+                </div>
 
-        <!-- Main Content -->
-        <main class="container">
-            <!-- Text input field -->
-            <div class="input-container mt-3">
-                <input type="text" placeholder="Start typing here">
-                <!-- Icon buttons for camera, attachment and microphone -->
-                <div class="icon-container">
-                    <i class="bi bi-camera"></i>
-                    <i class="bi bi-paperclip"></i>
-                    <i class="bi bi-mic"></i>
+                <!-- Additional input options (camera, attach file, microphone) -->
+                <div class="col d-flex align-items-center" style="margin-top: 6px;">
+                    <a class="link-dark me-2" href="#">
+                        <img src="../static/assets/bootstrap/bootstrap-icons/camera-fill.svg" alt="Camera" style="width: 2em; height: 2em;">
+                    </a>
+                    <a class="link-dark me-2" href="#">
+                        <img src="../static/assets/bootstrap/bootstrap-icons/paperclip.svg" alt="Paperclip" style="width: 2em; height: 2em;">
+                    </a>
+                    <a class="link-dark" href="#">
+                        <img src="../static/assets/bootstrap/bootstrap-icons/mic-fill.svg" alt="Mic icon" style="width: 2em; height: 2em;">
+                    </a>
                 </div>
             </div>
-        </main>
+        </div>
 
         <!-- Footer -->
-        <footer>
-            <a href="/legal">Legal info - terms / privacy policy</a>
+        <footer class="d-lg-flex">
+            <div class="container-fluid text-end text-muted py-4 py-lg-5">
+                <a class="link-secondary justify-content-end" href="/legal">Legal info - terms / privacy policy</a>
+            </div>
         </footer>
 
-        <!-- JavaScript function to toggle the sidebar menu -->
-        <script>
-            function toggleMenu() {
-              const menu = document.getElementById('menu');
-              menu.classList.toggle('visible');
-            }
-        </script>
+        <!-- Offcanvas menu -->
+        <div class="offcanvas offcanvas-end d-lg-flex" tabindex="-1" id="offcanvas-menu" data-bs-theme="dark">
+            <div class="offcanvas-body d-flex flex-column justify-content-between pt-0">
+                <div>
+                    <!-- Navigation menu -->
+                    <hr class="mt-0">
+                    <ul class="nav nav-pills flex-column mb-auto">
+                        <li class="nav-item"><a class="nav-link link-body-emphasis" href="/index">Home</a></li>
+                        <li class="nav-item"><a class="nav-link link-body-emphasis" href="/how-to-use">How to use</a></li>
+                        <li class="nav-item"><a class="nav-link link-body-emphasis" href="/about">About</a></li>
+                        <li class="nav-item"><a class="nav-link link-body-emphasis" href="/news">CS in the news</a></li>
+                        <li class="nav-item"><a class="nav-link link-body-emphasis" href="/learn-offline">Learn CS offline</a></li>
+                        <li class="nav-item"><a class="nav-link link-body-emphasis" href="/feedback">Feedback</a></li>
+                    </ul>
+                </div>
+                <!-- Account management -->
+                <div>
+                    <hr>
+                    <div class="dropdown">
+                        <a class="dropdown-toggle link-body-emphasis d-flex align-items-center text-decoration-none" aria-expanded="false" data-bs-toggle="dropdown" role="button">
+                            <img class="rounded-circle me-2" alt="" width="32" height="32" src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png" style="object-fit: cover;">
+                            <strong>My account</strong>&nbsp;
+                        </a>
+                        <div class="dropdown-menu shadow text-small" data-popper-placement="top-start">
+                            <a class="dropdown-item" href="/profile">Profile</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/sign-out">Sign out</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- External JavaScript -->
+        <script src="../static/assets/bootstrap/js/bootstrap.min.js"></script>
 
         <!-- Service worker registration -->
         <script>
