@@ -4,6 +4,7 @@ import sqlite3
 conn = sqlite3.connect("database.db")
 cursor = conn.cursor()
 
+# Create tables
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS query_history (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -90,16 +91,7 @@ cursor.execute('''
     )
 ''')
 
-# Create indexes separately in SQLite to establish relationships
-cursor.execute("CREATE INDEX IF NOT EXISTS idx_user_profiles_avatars ON user_profiles (avatars_id);")
-cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_profiles ON users (user_profiles_id);")
-cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_preferences ON users (user_preferences_id);")
-cursor.execute("CREATE INDEX IF NOT EXISTS idx_local_resources_categories ON local_resources (syllabus_categories_id);")
-cursor.execute("CREATE INDEX IF NOT EXISTS idx_query_result_history ON query_result_history (query_history_id);")
-cursor.execute("CREATE INDEX IF NOT EXISTS idx_news_preferences_categories ON news_preferences (news_categories_id);")
-cursor.execute("CREATE INDEX IF NOT EXISTS idx_news_preferences_users ON news_preferences (user_preferences_id);")
-
-# Commit and close
+# Commit changes
 conn.commit()
 
 # Check if tables were created
@@ -123,4 +115,5 @@ for table in tables:
     # Separator
     print("\n" + "-"*40)
 
+# Close the connection
 conn.close()
