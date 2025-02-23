@@ -59,7 +59,7 @@
                 {% for article in articles %}  <!-- Loop through articles -->
                 <tr>
                     <td>
-                        <strong>{{ article.title }}</strong><br>
+                        <strong>{{ article.title }}</strong> ({{ article.date }})<br>
                         {{ article.description or "No description available" }}<br>
                         <a href="{{ article.url }}" target="_blank">Link</a>
                     </td>
