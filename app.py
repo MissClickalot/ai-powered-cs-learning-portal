@@ -16,17 +16,51 @@ def index():
     return render_template('index.html')
 
 # Define a route for each page
-@app.route('/<page>')
-def render_page(page):
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/feedback')
+def feedback():
+    return render_template('feedback.html')
+
+@app.route('/history')
+def history():
+    return render_template('history.html')
+
+@app.route('/how-to-use')
+def how_to_use():
+    return render_template('how-to-use.html')
+
+@app.route('/learn-offline')
+def learn_offline():
+    return render_template('learn-offline.html')
+
+@app.route('/legal')
+def legal():
+    return render_template('legal.html')
+
+@app.route('/news')
+def news():
     try:
-        # Get keywords
-        gcse_keywords = get_syllabus_keywords()
         # Get news data
         news_categories = get_news_categories()
         extracted_news = get_news(news_categories)
-        return render_template(f'{page}.html', gcse_keywords=gcse_keywords, extracted_news=extracted_news)
+        return render_template('news.html', extracted_news=extracted_news)
     except:
-        return "Page not found", 404
+        return "News page not available", 500
+
+@app.route('/profile')
+def profile():
+    return render_template('profile.html')
+
+@app.route('/sign-in')
+def sign_in():
+    return render_template('sign-in.html')
+
+@app.route('/sign-out')
+def sign_out():
+    return render_template('sign-out.html')
 
 # Serve manifest.json from the static folder at the root URL
 @app.route('/manifest.json')
@@ -85,8 +119,6 @@ def get_news(news_categories):
 
         res = conn.getresponse()
         data = res.read()
-
-        # print(data.decode('utf-8'))
 
         # Parse JSON response
         try:
