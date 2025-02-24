@@ -74,7 +74,7 @@ def service_worker():
 # Load the spaCy model
 nlp = spacy.load("en_core_web_sm")
 
-# News
+# Function to extract news categories from database
 def get_news_categories():
     # Connect to the database
     conn = sqlite3.connect("database.db")
@@ -92,6 +92,7 @@ def get_news_categories():
 
     return news_categories
 
+# Function to make news API requests to extract articles using news category data
 def get_news(news_categories):
     # Establish connection to API
     conn = http.client.HTTPSConnection('api.thenewsapi.com')
