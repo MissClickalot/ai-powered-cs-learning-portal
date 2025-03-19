@@ -51,13 +51,13 @@
         <div class="container">
             <div class="row">
                 <!-- Text input for user questions -->
-                <div class="col-md-9 col-lg-10 col-xl-10 d-grid">
-                    <input class="form-control-lg" type="text" placeholder="What in Computer Science don't you understand?">
+                <form action="/" method="POST" class="col-md-9 col-lg-10 col-xl-10 d-grid">
+                    <input class="form-control-lg" name="user_input" type="text" placeholder="What in Computer Science don't you understand?">
                     <!-- Link to search history -->
                     <a class="link-secondary" href="/history" title="View search history">
                         <img src="../static/assets/bootstrap/bootstrap-icons/clock-history.svg" alt="History" style="width: 1em; height: 1em; margin-top: 8px; font-size: 24px;">
                     </a>
-                </div>
+                </form>
 
                 <!-- Additional input options (camera, attach file, microphone) -->
                 <div class="col d-flex align-items-center" style="margin-top: 6px;">
@@ -73,6 +73,25 @@
                 </div>
             </div>
         </div>
+
+        {% if hyperlinked_learning_content %}
+        <!-- Learning search results -->
+        <div class="container">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <tbody>
+                    {% for key, value in hyperlinked_learning_content.items() %}  <!-- Loop through items -->
+                    <tr>
+                        <td>
+                            <a href="{{ value['url'] }}" target="_blank">{{ value['title'] }}</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
 
         <!-- Footer -->
         <footer class="d-lg-flex">
