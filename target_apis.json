@@ -1,0 +1,22 @@
+https://bit-by-bit.org/api/learning-outcomes?_format=json
+
+Example
+https://bit-by-bit.org/api/learning-by-outcome?_format=json&outcome_id=16878
+
+https://bit-by-bit.org/api/self-test-by-outcome?_format=json&outcome_id=16878
+https://bit-by-bit.org/api/gcse-questions-by-outcome?_format=json&outcome_id=16878
+
+Computer systems
+Data representation
+Boolean logic
+Algorithmic thinking
+Programming
+Databases
+Productivity software
+Solution development
+Testing
+Computer networks
+Security
+Impacts
+Digital authoring
+Electronics
