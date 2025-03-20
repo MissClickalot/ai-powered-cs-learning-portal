@@ -39,6 +39,17 @@
         <h1>Complete Computer Science course offline</h1>
         <!-- Informational text -->
         <p><span style="color: rgb(0, 0, 0);">The following GCSE Computer Science resources can be viewed offline.&nbsp;</span></p>
+
+        <p>{{ resources_by_category }}</p>
+
+        {% for category, files in resources_by_category.items() %}
+        <h2>{{ category }}</h2>
+        <ul>
+            {% for file in files %}
+            <li><a href="{{ file }}" target="_blank">{{ file }}</a></li>
+            {% endfor %}
+        </ul>
+        {% endfor %}
     </div>
 
     <!-- Offcanvas Menu Section -->

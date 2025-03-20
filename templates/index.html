@@ -51,8 +51,12 @@
         <div class="container">
             <div class="row">
                 <!-- Text input for user questions -->
-                <form action="/" method="POST" class="col-md-9 col-lg-10 col-xl-10 d-grid">
-                    <input class="form-control-lg" name="user_input" type="text" placeholder="What in Computer Science don't you understand?">
+                <form id="queryForm" action="/" method="POST" class="col-md-9 col-lg-10 col-xl-10 d-grid">
+                    <input id="userInput" class="form-control-lg" name="user_input" type="text" placeholder="What in Computer Science don't you understand?">
+
+                    <!-- Hidden field to indicate if speech was used -->
+                    <input type="hidden" name="use_speech" id="useSpeech" value="false">
+
                     <!-- Link to search history -->
                     <a class="link-secondary" href="/history" title="View search history">
                         <img src="../static/assets/bootstrap/bootstrap-icons/clock-history.svg" alt="History" style="width: 1em; height: 1em; margin-top: 8px; font-size: 24px;">
@@ -67,7 +71,7 @@
                     <a class="link-dark me-2" href="#">
                         <img src="../static/assets/bootstrap/bootstrap-icons/paperclip.svg" alt="Paperclip" style="width: 2em; height: 2em;">
                     </a>
-                    <a class="link-dark" href="#">
+                    <a class="link-dark" id="micButton" style="cursor: pointer;">
                         <img src="../static/assets/bootstrap/bootstrap-icons/mic-fill.svg" alt="Mic icon" style="width: 2em; height: 2em;">
                     </a>
                 </div>
@@ -149,6 +153,40 @@
                   console.log('Service Worker registration failed:', error);
                 });
             }
+        </script>
+
+        <!-- JavaScript for speech to text -->
+        <script>
+            document.getElementById("micButton").addEventListener("click", function(event) {
+                event.preventDefault(); // Prevent default action
+
+                const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.lang = "en-US"; // Set language
+
+                recognition.onstart = function() {
+                    console.log("Listening...");
+                };
+
+                recognition.onspeechend = function() {
+                    recognition.stop();
+                };
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    console.log("Recognized Speech:", transcript);
+
+                    // Fill input with speech-to-text result
+                    document.getElementById("userInput").value = transcript;
+
+                    // Indicate speech input was used
+                    document.getElementById("useSpeech").value = "true";
+
+                    // Auto-submit form
+                    document.getElementById("queryForm").submit();
+                };
+
+                recognition.start();
+            });
         </script>
     </body>
 </html>
