@@ -16,14 +16,32 @@
         <!-- External Bootstrap 5 CSS stylesheets -->
         <link rel="stylesheet" href="../static/assets/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" href="../static/assets/css/Footer-Basic-icons.css">
+        <!-- Custom stylesheet -->
+        <link rel="stylesheet" href="../static/assets/css/custom_styles.css">
     </head>
 
     <body>
         <!-- Header section -->
         <header>
-            <div class="container-fluid" style="margin-bottom: 8px; margin-top: 8px;">
-                <!-- Offcanvas menu button -->
-                <a class="d-flex justify-content-end" data-bs-target="#offcanvas-menu" data-bs-toggle="offcanvas">
+            <div class="container-fluid d-flex align-items-center justify-content-between" style="margin: 8px 0;">
+
+                <!-- Left section -->
+                <div class="d-flex align-items-center">
+                    <!-- Logo -->
+                    <a href="/index">
+                        <img src="../static/icons/scalable.svg" alt="Logo" style="height: 100px; margin-right: 15px;">
+                    </a>
+                    <!-- Text beside the logo -->
+                    <div class="d-flex flex-column">
+                        <h2 class="mb-1">AI-powered GCSE Computer Science Learning Portal</h2>
+                        <p class="mb-0">
+                            Search for GCSE learning material, get relevant news and offline material all in one place
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Offcanvas menu button on the right -->
+                <a class="d-flex" data-bs-target="#offcanvas-menu" data-bs-toggle="offcanvas">
                     <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-list text-body" style="font-size: 48px;">
                         <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"></path>
                     </svg>
@@ -41,61 +59,81 @@
             </div>
         </div>
 
-        <!-- Introductory content -->
-        <div class="container">
-            <h1>How can I help?</h1>
-            <p>Try asking 'What is binary?' or 'How do loops work in Python?'</p>
-        </div>
-
-        <!-- Input field for user queries -->
-        <div class="container">
+        <!-- Main content section -->
+        <div class="container-fluid">
             <div class="row">
-                <!-- Text input for user questions -->
-                <form id="queryForm" action="/" method="POST" class="col-md-9 col-lg-10 col-xl-10 d-grid">
-                    <input id="userInput" class="form-control-lg" name="user_input" type="text" placeholder="What in Computer Science don't you understand?">
+                <!-- Left section (2/3 of the page) -->
+                <div class="col-lg-8 col-md-8 col-sm-12 p-4 bg-light">
+                    <h1>How can I help?</h1>
+                    <p>Try asking 'What is binary?' or 'How do loops work in Python?'</p>
+                    <!-- Text input for user questions -->
+                    <form id="queryForm" action="/" method="POST" class="col-md-9 col-lg-10 col-xl-10 d-grid">
+                        <input id="userInput" class="form-control-lg" name="user_input" type="text" placeholder="What in Computer Science don't you understand?">
 
-                    <!-- Hidden field to indicate if speech was used -->
-                    <input type="hidden" name="use_speech" id="useSpeech" value="false">
+                        <!-- Hidden field to indicate if speech was used -->
+                        <input type="hidden" name="use_speech" id="useSpeech" value="false">
 
-                    <!-- Link to search history -->
-                    <a class="link-secondary" href="/history" title="View search history">
-                        <img src="../static/assets/bootstrap/bootstrap-icons/clock-history.svg" alt="History" style="width: 1em; height: 1em; margin-top: 8px; font-size: 24px;">
-                    </a>
-                </form>
+                        <!-- Link to search history -->
+                        <a class="link-secondary" href="/history" title="View search history">
+                            <img src="../static/assets/bootstrap/bootstrap-icons/clock-history.svg" alt="History" style="width: 1em; height: 1em; margin-top: 8px; font-size: 24px;">
+                        </a>
+                    </form>
 
-                <!-- Additional input options (camera, attach file, microphone) -->
-                <div class="col d-flex align-items-center" style="margin-top: 6px;">
-                    <a class="link-dark me-2" href="#">
-                        <img src="../static/assets/bootstrap/bootstrap-icons/camera-fill.svg" alt="Camera" style="width: 2em; height: 2em;">
-                    </a>
-                    <a class="link-dark me-2" href="#">
-                        <img src="../static/assets/bootstrap/bootstrap-icons/paperclip.svg" alt="Paperclip" style="width: 2em; height: 2em;">
-                    </a>
-                    <a class="link-dark" id="micButton" style="cursor: pointer;">
-                        <img src="../static/assets/bootstrap/bootstrap-icons/mic-fill.svg" alt="Mic icon" style="width: 2em; height: 2em;">
-                    </a>
+                    <!-- Additional input options (camera, attach file, microphone) -->
+                    <div class="col d-flex align-items-center" style="margin-top: 6px;">
+                        <a class="link-dark me-2" href="#">
+                            <img src="../static/assets/bootstrap/bootstrap-icons/camera-fill.svg" alt="Camera" style="width: 2em; height: 2em;">
+                        </a>
+                        <a class="link-dark me-2" href="#">
+                            <img src="../static/assets/bootstrap/bootstrap-icons/paperclip.svg" alt="Paperclip" style="width: 2em; height: 2em;">
+                        </a>
+                        <a class="link-dark" id="micButton" style="cursor: pointer;">
+                            <img src="../static/assets/bootstrap/bootstrap-icons/mic-fill.svg" alt="Mic icon" style="width: 2em; height: 2em;">
+                        </a>
+                    </div>
+
+                    <!-- Learning search results -->
+                    {% if hyperlinked_learning_content %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <tbody>
+                            {% for key, value in hyperlinked_learning_content.items() %}  <!-- Loop through items -->
+                            <tr>
+                                <td>
+                                    <a href="{{ value['url'] }}" target="_blank">{{ value['title'] }}</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Right section (1/3 of the page) -->
+                <div class="col-lg-4 col-md-4 col-sm-12 p-4">
+                    <h2>Further reading...</h2>
+                    <p>Impress your teacher by staying up to date with relevant news and brushing up on your Computer Science knowlegde on the go.</p>
+                    <!-- Card row -->
+                    <div class="d-flex flex-wrap gap-4">
+                        <!-- News card -->
+                        <div class="card border border-light" style="width: 200px; height: 200px;">
+                            <div class="card-header bg-primary text-white fw-bold p-3">NEWS</div>
+                            <div class="card-body text-start p-3">
+                                <p>What should you know about right now?</p>
+                            </div>
+                        </div>
+                        <!-- Learn offline card -->
+                        <div class="card border border-light" style="width: 200px; height: 200px;">
+                            <div class="card-header bg-success text-white fw-bold p-3">LEARN OFFLINE</div>
+                            <div class="card-body text-start p-3">
+                                <p>Don't have internet? Check out these resources.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        {% if hyperlinked_learning_content %}
-        <!-- Learning search results -->
-        <div class="container">
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <tbody>
-                    {% for key, value in hyperlinked_learning_content.items() %}  <!-- Loop through items -->
-                    <tr>
-                        <td>
-                            <a href="{{ value['url'] }}" target="_blank">{{ value['title'] }}</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        {% endif %}
 
         <!-- Footer -->
         <footer class="d-lg-flex">

@@ -1,0 +1,5 @@
+/* Ensure all .card elements have square edges by removing the default border-radius */
+.card,
+.card-header {
+    border-radius: 0 !important;
+}
