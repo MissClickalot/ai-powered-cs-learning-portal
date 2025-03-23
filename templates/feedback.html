@@ -1,118 +1,55 @@
-<!DOCTYPE html>
-<!-- Use the light bootstrap theme and set language to English -->
-<html data-bs-theme="light" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <!--
-    'width=device-width' sets the width of the viewport to match the device's screen width
-    'initial-scale=1.0' sets the initial zoom level of the page to 1 (default scale), stops mobiles zooming out or displaying a desktop layout
-    -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Feedback - CS learning portal</title>
-    <!-- Manifest (PWA) json -->
-    <link rel="manifest" href="../static/manifest.json" />
-    <!-- Icon to fallback to if manifest is not supported by the browser -->
-    <link rel="icon" href="../static/icons/scalable.svg" />
-    <!-- External Bootstrap 5 CSS stylesheets -->
-    <link rel="stylesheet" href="../static/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../static/assets/css/Footer-Basic-icons.css">
-</head>
+{% extends "base.html" %}
 
-<body>
-    <!-- Header Section -->
-    <header>
-        <div class="container-fluid" style="margin-bottom: 8px; margin-top: 8px;">
-            <!-- Button to toggle the offcanvas menu -->
-            <a class="d-flex justify-content-end" data-bs-target="#offcanvas-menu" data-bs-toggle="offcanvas">
-                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-list text-body" style="font-size: 48px;">
-                    <!-- SVG path for the hamburger menu icon -->
-                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"></path>
-                </svg>
-            </a>
-        </div>
-    </header>
+{% block title %}
+Feedback - CS Learning Portal
+{% endblock %}
 
-    <!-- Main Content -->
+{% block content %}
+<!-- Main content -->
+<section class="py-5 bg-light mb-4">
     <div class="container">
-        <!-- Feedback prompt -->
-        <h1>Have any suggestions?</h1>
-        <p>Please ensure any feedback is constructive so that the AI-powered Computer Science Learning Portal can be as useful as possible.</p>
-        <p>By providing your email address, you are confirming that you are happy to be contacted regarding the feedback to engage in a conversation about how the portal can be improved upon.&nbsp;</p>
+        <h2 class="display-6">Have any suggestions?</h2>
+    </div>
+</section>
+<div class="container">
+    <!-- Feedback prompt -->
+    <p>Please ensure any feedback is constructive so that the AI-powered Computer Science Learning Portal can be as useful as possible.</p>
+    <p>By providing your email address, you are confirming that you are happy to be contacted regarding the feedback to engage in a conversation about how the portal can be improved upon.&nbsp;</p>
 
-        <!-- Feedback form section -->
-        <section class="position-relative py-4 py-xl-5">
-            <div class="container position-relative">
-                <div class="row d-flex justify-content-center">
-                    <!-- Card container for feedback form -->
-                    <div class="col-md-8 col-lg-6 col-xl-5 col-xxl-4">
-                        <div class="card mb-5">
-                            <div class="card-body p-sm-5">
-                                <!-- Feedback form header -->
-                                <h2 class="text-center mb-4">Feedback</h2>
-                                <!-- Feedback form -->
-                                <form method="post">
-                                    <!-- Name input field -->
-                                    <div class="mb-3">
-                                        <input class="form-control" type="text" id="name-2" name="name" placeholder="Name">
-                                    </div>
-                                    <!-- Email input field -->
-                                    <div class="mb-3">
-                                        <input class="form-control" type="email" id="email-2" name="email" placeholder="Email">
-                                    </div>
-                                    <!-- Message textarea field -->
-                                    <div class="mb-3">
-                                        <textarea class="form-control" id="message-2" name="message" rows="6" placeholder="Message"></textarea>
-                                    </div>
-                                    <!-- Submit button -->
-                                    <div>
-                                        <button class="btn btn-primary d-block w-100" type="submit">Send</button>
-                                    </div>
-                                </form>
-                            </div>
+    <!-- Feedback form section -->
+    <section class="position-relative py-4 py-xl-5">
+        <div class="container position-relative">
+            <div class="row d-flex justify-content-center">
+                <!-- Card container for feedback form -->
+                <div class="col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+                    <div class="card mb-5">
+                        <div class="card-body p-sm-5">
+                            <!-- Feedback form header -->
+                            <h2 class="text-center mb-4">Feedback</h2>
+                            <!-- Feedback form -->
+                            <form method="post">
+                                <!-- Name input field -->
+                                <div class="mb-3">
+                                    <input class="form-control" type="text" id="name-2" name="name" placeholder="Name">
+                                </div>
+                                <!-- Email input field -->
+                                <div class="mb-3">
+                                    <input class="form-control" type="email" id="email-2" name="email" placeholder="Email">
+                                </div>
+                                <!-- Message textarea field -->
+                                <div class="mb-3">
+                                    <textarea class="form-control" id="message-2" name="message" rows="6" placeholder="Message"></textarea>
+                                </div>
+                                <!-- Submit button -->
+                                <div>
+                                    <button class="btn btn-primary d-block w-100" type="submit">Send</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
-
-    <!-- Offcanvas Menu Section -->
-    <div class="offcanvas offcanvas-end d-lg-flex" tabindex="-1" id="offcanvas-menu" data-bs-theme="dark">
-        <div class="offcanvas-body d-flex flex-column justify-content-between pt-0">
-            <!-- Navigation Links -->
-            <div>
-                <hr class="mt-0">
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/index">Home</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/how-to-use">How to use</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/about">About</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/news">CS in the news</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/learn-offline">Learn CS offline</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/feedback">Feedback</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/legal">Legal info</a></li>
-                </ul>
-            </div>
-            <!-- User Account Dropdown -->
-            <div>
-                <hr>
-                <div class="dropdown">
-                    <!-- User profile dropdown -->
-                    <a class="dropdown-toggle link-body-emphasis d-flex align-items-center text-decoration-none" aria-expanded="false" data-bs-toggle="dropdown" role="button">
-                        <!-- Placeholder profile image -->
-                        <img class="rounded-circle me-2" alt="" width="32" height="32" src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png" style="object-fit: cover;">
-                        <strong>My account</strong>&nbsp;
-                    </a>
-                    <!-- Dropdown menu -->
-                    <div class="dropdown-menu shadow text-small" data-popper-placement="top-start">
-                        <a class="dropdown-item" href="/profile">Profile</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/sign-out">Sign out</a>
-                    </div>
-                </div>
-            </div>
         </div>
-    </div>
-
-    <!-- External JavaScript -->
-    <script src="../static/assets/bootstrap/js/bootstrap.min.js"></script>
-</body>
+    </section>
+</div>
+{% endblock %}

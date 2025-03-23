@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!-- Use the light bootstrap theme and set language to English -->
+<html data-bs-theme="light" lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <!--
+        'width=device-width' sets the width of the viewport to match the device's screen width
+        'initial-scale=1.0' sets the initial zoom level of the page to 1 (default scale), stops mobiles zooming out or displaying a desktop layout
+        -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+        <title>Home - CS learning portal</title>
+        <!-- Manifest (PWA) json -->
+        <link rel="manifest" href="../static/manifest.json" />
+        <!-- Icon to fallback to if manifest is not supported by the browser -->
+        <link rel="icon" href="../static/icons/scalable.svg" />
+        <!-- External Bootstrap 5 CSS stylesheets -->
+        <link rel="stylesheet" href="../static/assets/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../static/assets/css/Footer-Basic-icons.css">
+        <!-- Custom stylesheet -->
+        <link rel="stylesheet" href="../static/assets/css/custom_styles.css">
+    </head>
+
+    <body>
+        <!-- Shared header -->
+        {% include "partials/header.html" %}
+
+        <!-- Page-specific content -->
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Shared offcanvas menu -->
+        {% include "partials/offcanvas.html" %}
+
+        <!-- Shared footer -->
+        {% include "partials/footer.html" %}
+
+        <!-- External Bootstrap JavaScript -->
+        <script src="{{ url_for('static', filename='assets/bootstrap/js/bootstrap.min.js') }}"></script>
+
+        <!-- Service worker registration -->
+        <script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker
+                    .register('{{ url_for("static", filename="service_worker.js") }}')
+                    .then(reg => console.log('Service Worker registered:', reg.scope))
+                    .catch(err => console.error('Service Worker registration failed:', err));
+            }
+        </script>
+
+        <!-- Enable Bootstrap tooltips -->
+        <script>
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
+        </script>
+
+        <!-- JavaScript specific to certain pages -->
+        {% block scripts %}{% endblock %}
+    </body>
+</html>

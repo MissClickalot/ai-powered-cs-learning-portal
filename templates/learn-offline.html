@@ -1,99 +1,38 @@
-<!DOCTYPE html>
-<!-- Use the light bootstrap theme and set language to English -->
-<html data-bs-theme="light" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <!--
-    'width=device-width' sets the width of the viewport to match the device's screen width
-    'initial-scale=1.0' sets the initial zoom level of the page to 1 (default scale), stops mobiles zooming out or displaying a desktop layout
-    -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Learn offline - CS learning portal</title>
-    <!-- Manifest (PWA) json -->
-    <link rel="manifest" href="../static/manifest.json" />
-    <!-- Icon to fallback to if manifest is not supported by the browser -->
-    <link rel="icon" href="../static/icons/scalable.svg" />
-    <!-- External Bootstrap 5 CSS stylesheets -->
-    <link rel="stylesheet" href="../static/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../static/assets/css/Footer-Basic-icons.css">
-</head>
+{% extends "base.html" %}
 
-<body>
-    <!-- Header Section -->
-    <header>
-        <div class="container-fluid" style="margin-bottom: 8px; margin-top: 8px;">
-            <!-- Offcanvas menu toggle button -->
-            <a class="d-flex justify-content-end" data-bs-target="#offcanvas-menu" data-bs-toggle="offcanvas">
-                <!-- SVG icon for hamburger menu -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-list text-body" style="font-size: 48px;">
-                    <!-- Paths to render the three horizontal lines of the menu icon -->
-                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"></path>
-                </svg>
-            </a>
-        </div>
-    </header>
+{% block title %}
+Learn offline - CS Learning Portal
+{% endblock %}
 
-    <!-- Main Content Section -->
+{% block content %}
+<!-- Main content section -->
+<section class="py-5 bg-light mb-4">
     <div class="container">
-        <!-- Section heading -->
-        <h1>Complete Computer Science course offline</h1>
-        <!-- Informational text -->
-        <p><span style="color: rgb(0, 0, 0);">The following GCSE Computer Science resources can be viewed offline.&nbsp;</span></p>
-
-        <p>{{ resources_by_category }}</p>
-
-        {% for category, files in resources_by_category.items() %}
-        <h2>{{ category }}</h2>
-        <ul>
-            {% for file in files %}
-            <li><a href="{{ file }}" target="_blank">{{ file }}</a></li>
-            {% endfor %}
-        </ul>
-        {% endfor %}
+        <h2 class="display-6">Complete Computer Science course offline</h2>
+        <p class="lead">Download and access the full GCSE Computer Science curriculum without an internet connection.</p>
     </div>
+</section>
 
-    <!-- Offcanvas Menu Section -->
-    <div class="offcanvas offcanvas-end d-lg-flex" tabindex="-1" id="offcanvas-menu" data-bs-theme="dark">
-        <div class="offcanvas-body d-flex flex-column justify-content-between pt-0">
-            <!-- Navigation Links Section -->
-            <div>
-                <hr class="mt-0">
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <!-- Navigation items linking to various sections/pages -->
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/index">Home</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/how-to-use">How to use</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/about">About</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/news">CS in the news</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/learn-offline">Learn CS offline</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/feedback">Feedback</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/legal">Legal info</a></li>
-                </ul>
-            </div>
+<!-- Resource content section -->
+<div class="container">
+    {% for category, files in resources_by_category.items() %}
+    <div class="mb-4">
+        <!-- Category title -->
+        <h3>{{ category }}</h3>
 
-            <!-- User Account Section -->
-            <div>
-                <hr>
-                <div class="dropdown">
-                    <!-- User account dropdown toggle -->
-                    <a class="dropdown-toggle link-body-emphasis d-flex align-items-center text-decoration-none" aria-expanded="false" data-bs-toggle="dropdown" role="button">
-                        <!-- Placeholder image for user profile -->
-                        <img class="rounded-circle me-2" alt="" width="32" height="32" src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png" style="object-fit: cover;">
-                        <strong>My account</strong>&nbsp;
+        <!-- Card container -->
+        <div class="card border-0 shadow-sm">
+            <ul class="list-group list-group-flush">
+                {% for file in files %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{{ file }}" target="_blank" class="text-decoration-none">
+                        {{ file }}
                     </a>
-                    <!-- Dropdown menu items -->
-                    <div class="dropdown-menu shadow text-small" data-popper-placement="top-start">
-                        <!-- Profile and Sign-out links -->
-                        <a class="dropdown-item" href="/profile">Profile</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/sign-out">Sign out</a>
-                    </div>
-                </div>
-            </div>
+                </li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
-
-    <!-- External JavaScript -->
-    <script src="../static/assets/bootstrap/js/bootstrap.min.js"></script>
-</body>
-
-</html>
+    {% endfor %}
+</div>
+{% endblock %}

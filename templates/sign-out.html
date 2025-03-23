@@ -1,98 +1,26 @@
-<!DOCTYPE html>
-<!-- Use the light bootstrap theme and set language to English -->
-<html data-bs-theme="light" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <!--
-    'width=device-width' sets the width of the viewport to match the device's screen width
-    'initial-scale=1.0' sets the initial zoom level of the page to 1 (default scale), stops mobiles zooming out or displaying a desktop layout
-    -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Sign out - CS learning portal</title>
-    <!-- Manifest (PWA) json -->
-    <link rel="manifest" href="../static/manifest.json" />
-    <!-- Icon to fallback to if manifest is not supported by the browser -->
-    <link rel="icon" href="../static/icons/scalable.svg" />
-    <!-- External Bootstrap 5 CSS stylesheets -->
-    <link rel="stylesheet" href="../static/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../static/assets/css/Footer-Basic-icons.css">
-</head>
+{% extends "base.html" %}
 
-<body>
-    <!-- Header Section -->
-    <header>
-        <div class="container-fluid" style="margin-bottom: 8px; margin-top: 8px;">
-            <!-- Button to toggle the offcanvas menu -->
-            <a class="d-flex justify-content-end" data-bs-target="#offcanvas-menu" data-bs-toggle="offcanvas">
-                <!-- SVG icon for the hamburger menu -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-list text-body" style="font-size: 48px;">
-                    <!-- Paths to render the three horizontal lines of the menu icon -->
-                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"></path>
-                </svg>
-            </a>
-        </div>
-    </header>
+{% block title %}
+Sign out - CS Learning Portal
+{% endblock %}
 
-    <!-- Signed-out Notification Section -->
-    <div class="container">
-        <!-- Signed-out heading -->
-        <h2>You're now signed out</h2>
-        <!-- Description of restrictions while signed out -->
-        <p>Note that you won't be able to view or save search history or customise news feed whilst signed out.&nbsp;</p>
-    </div>
+{% block content %}
+<!-- Signed-out notification section -->
+<div class="container">
+    <!-- Signed-out heading -->
+    <h2>You're now signed out</h2>
+    <!-- Description of restrictions while signed out -->
+    <p>Note that you won't be able to view or save search history or customise news feed whilst signed out.&nbsp;</p>
+</div>
 
-    <!-- Links to Home and Sign-in -->
-    <div class="container">
-        <!-- Link to navigate back to the home page -->
-        <a href="/index">Back to home</a>
-        <span>&nbsp;or&nbsp;
-            <!-- Link to navigate to the sign-in page -->
+<!-- Links to home and sign-in -->
+<div class="container">
+    <!-- Link to navigate back to the home page -->
+    <a href="/index">Back to home</a>
+    <span>&nbsp;or&nbsp;
+        <!-- Link to navigate to the sign-in page -->
                 <a href="/sign-in">Sign in</a>
                 <span>&nbsp;again</span>
             </span>
-    </div>
-
-    <!-- Offcanvas Menu Section -->
-    <div class="offcanvas offcanvas-end d-lg-flex" tabindex="-1" id="offcanvas-menu" data-bs-theme="dark">
-        <div class="offcanvas-body d-flex flex-column justify-content-between pt-0">
-            <!-- Navigation Links -->
-            <div>
-                <hr class="mt-0">
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <!-- Links to various pages -->
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/index">Home</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/how-to-use">How to use</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/about">About</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/news">CS in the news</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/learn-offline">Learn CS offline</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/feedback">Feedback</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/legal">Legal info</a></li>
-                </ul>
-            </div>
-
-            <!-- User Account Section -->
-            <div>
-                <hr>
-                <div class="dropdown">
-                    <!-- User account dropdown toggle -->
-                    <a class="dropdown-toggle link-body-emphasis d-flex align-items-center text-decoration-none" aria-expanded="false" data-bs-toggle="dropdown" role="button">
-                        <!-- Placeholder for user profile image -->
-                        <img class="rounded-circle me-2" alt="" width="32" height="32" src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png" style="object-fit: cover;">
-                        <strong>My account</strong>&nbsp;
-                    </a>
-                    <!-- Dropdown menu for user account actions -->
-                    <div class="dropdown-menu shadow text-small" data-popper-placement="top-start">
-                        <a class="dropdown-item" href="/profile">Profile</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/sign-out">Sign out</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- External JavaScript -->
-    <script src="../static/assets/bootstrap/js/bootstrap.min.js"></script>
-</body>
-
-</html>
+</div>
+{% endblock %}

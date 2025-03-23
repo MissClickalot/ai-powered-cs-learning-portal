@@ -1,124 +1,57 @@
-<!DOCTYPE html>
-<!-- Use the light bootstrap theme and set language to English -->
-<html data-bs-theme="light" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <!--
-    'width=device-width' sets the width of the viewport to match the device's screen width
-    'initial-scale=1.0' sets the initial zoom level of the page to 1 (default scale), stops mobiles zooming out or displaying a desktop layout
-    -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Sign in - CS learning portal</title>
-    <!-- Manifest (PWA) json -->
-    <link rel="manifest" href="../static/manifest.json" />
-    <!-- Icon to fallback to if manifest is not supported by the browser -->
-    <link rel="icon" href="../static/icons/scalable.svg" />
-    <!-- External Bootstrap 5 CSS stylesheets -->
-    <link rel="stylesheet" href="../static/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../static/assets/css/Footer-Basic-icons.css">
-</head>
+{% extends "base.html" %}
 
-<body>
-    <!-- Header Section -->
-    <header>
-        <div class="container-fluid" style="margin-bottom: 8px; margin-top: 8px;">
-            <!-- Offcanvas menu toggle button -->
-            <a class="d-flex justify-content-end" data-bs-target="#offcanvas-menu" data-bs-toggle="offcanvas">
-                <!-- SVG icon for the hamburger menu -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-list text-body" style="font-size: 48px;">
-                    <!-- Paths for the hamburger menu icon -->
-                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"></path>
-                </svg>
-            </a>
-        </div>
-    </header>
+{% block title %}
+Sign in - CS Learning Portal
+{% endblock %}
 
-    <!-- Main Content Section -->
+{% block content %}
+<!-- Main content section -->
+<section class="py-5 bg-light mb-4">
     <div class="container">
-        <section class="position-relative py-4 py-xl-5">
-            <!-- Card container for login form -->
-            <div class="card mb-5">
-                <div class="card-body d-flex flex-column align-items-center">
-                    <!-- Profile icon above the login form -->
-                    <div class="bs-icon-xl bs-icon-circle bs-icon-primary bs-icon my-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-person-fill">
-                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"></path>
-                        </svg>
-                    </div>
-                    <!-- Login form -->
-                    <form class="text-center" method="post">
-                        <!-- Email input field -->
-                        <div class="mb-3">
-                            <input class="form-control" type="email" name="email" placeholder="Email">
-                        </div>
-                        <!-- Password input field -->
-                        <div class="mb-3">
-                            <input class="form-control" type="password" name="password" placeholder="Password">
-                        </div>
-                        <!-- Remember me checkbox -->
-                        <div class="form-check text-start">
-                            <input class="form-check-input" type="checkbox" id="formCheck-1">
-                            <label class="form-check-label" for="formCheck-1">Remember me</label>
-                        </div>
-                        <!-- Submit button -->
-                        <div class="mb-3">
-                            <button class="btn btn-primary d-block w-100" type="submit" style="margin-top: 14px;">Login</button>
-                        </div>
-                        <!-- Forgot password link -->
-                        <div>
-                            <a class="link-secondary" href="#">Forgot your password?</a>
-                        </div>
-                        <!-- Sign-up link -->
-                        <div style="margin-top: 8px;">
-                            <a class="link-secondary" href="#">Don't have an account? Sign up</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </section>
+        <h2 class="display-6">Sign in</h2>
     </div>
-
-    <!-- Offcanvas Menu Section -->
-    <div class="offcanvas offcanvas-end d-lg-flex" tabindex="-1" id="offcanvas-menu" data-bs-theme="dark">
-        <div class="offcanvas-body d-flex flex-column justify-content-between pt-0">
-            <!-- Navigation Links -->
-            <div>
-                <hr class="mt-0">
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <!-- Navigation menu items -->
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/index">Home</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/how-to-use">How to use</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/about">About</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/news">CS in the news</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/learn-offline">Learn CS offline</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/feedback">Feedback</a></li>
-                    <li class="nav-item"><a class="nav-link link-body-emphasis" href="/legal">Legal info</a></li>
-                </ul>
-            </div>
-
-            <!-- User Account Section -->
-            <div>
-                <hr>
-                <div class="dropdown">
-                    <!-- User account dropdown toggle -->
-                    <a class="dropdown-toggle link-body-emphasis d-flex align-items-center text-decoration-none" aria-expanded="false" data-bs-toggle="dropdown" role="button">
-                        <!-- Placeholder profile image -->
-                        <img class="rounded-circle me-2" alt="" width="32" height="32" src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png" style="object-fit: cover;">
-                        <strong>My account</strong>&nbsp;
-                    </a>
-                    <!-- Dropdown menu for user account -->
-                    <div class="dropdown-menu shadow text-small" data-popper-placement="top-start">
-                        <a class="dropdown-item" href="/profile">Profile</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/sign-out">Sign out</a>
-                    </div>
+</section>
+<div class="container">
+    <section class="position-relative py-4 py-xl-5">
+        <!-- Card container for login form -->
+        <div class="card mb-5">
+            <div class="card-body d-flex flex-column align-items-center">
+                <!-- Profile icon above the login form -->
+                <div class="bs-icon-xl bs-icon-circle bs-icon-primary bs-icon my-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-person-fill">
+                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"></path>
+                    </svg>
                 </div>
+                <!-- Login form -->
+                <form class="text-center" method="post">
+                    <!-- Email input field -->
+                    <div class="mb-3">
+                        <input class="form-control" type="email" name="email" placeholder="Email">
+                    </div>
+                    <!-- Password input field -->
+                    <div class="mb-3">
+                        <input class="form-control" type="password" name="password" placeholder="Password">
+                    </div>
+                    <!-- Remember me checkbox -->
+                    <div class="form-check text-start">
+                        <input class="form-check-input" type="checkbox" id="formCheck-1">
+                        <label class="form-check-label" for="formCheck-1">Remember me</label>
+                    </div>
+                    <!-- Submit button -->
+                    <div class="mb-3">
+                        <button class="btn btn-primary d-block w-100" type="submit" style="margin-top: 14px;">Login</button>
+                    </div>
+                    <!-- Forgot password link -->
+                    <div>
+                        <a class="link-secondary" href="#">Forgot your password?</a>
+                    </div>
+                    <!-- Sign-up link -->
+                    <div style="margin-top: 8px;">
+                        <a class="link-secondary" href="#">Don't have an account? Sign up</a>
+                    </div>
+                </form>
             </div>
         </div>
-    </div>
-
-    <!-- External JavaScript -->
-    <script src="../static/assets/bootstrap/js/bootstrap.min.js"></script>
-</body>
-
-</html>
+    </section>
+</div>
+{% endblock %}
