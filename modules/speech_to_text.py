@@ -50,4 +50,5 @@ if __name__ == '__main__':
     # Load the Vosk model
     model = load_stt_model()
     # Start speech recognition
-    stt_recognise_speech(model, audio_queue)
+    result = stt_recognise_speech(model, audio_queue)
+    print(result)
