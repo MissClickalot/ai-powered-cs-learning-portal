@@ -3,3 +3,13 @@
 .card-header {
     border-radius: 0 !important;
 }
+
+/* Ensure all .icon-bar elements have appropriate spacing */
+.icon-bar a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5em;
+    height: 2.5em;
+    font-size: 1rem;
+}
