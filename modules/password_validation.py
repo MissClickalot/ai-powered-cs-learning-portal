@@ -1,6 +1,6 @@
-import bcrypt
 import re
-from argon2 import PasswordHasher
+from argon2 import PasswordHasher  # Argon2 is one of the most secure password hashing algorithms
+from argon2.exceptions import VerifyMismatchError  # To catch all exceptions hides errors (e.g. Argon2 version mismatches)
 
 # Validate the password against security requirements
 def validate_password(password):
@@ -25,13 +25,13 @@ def hash_password(password):
     hashed_password = ph.hash(password)
     return hashed_password
 
-# Verify the password against the Argon2 hashed password
+# Verify the password against the Argon2 hash
 def verify_password(input_password, hashed_password):
     # Verifies the input password against the hashed password.
     ph = PasswordHasher()
     try:
         return ph.verify(hashed_password, input_password)
-    except Exception:
+    except VerifyMismatchError:
         # Password is incorrect
         return False
 
