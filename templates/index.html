@@ -9,12 +9,12 @@ Home - CS Learning Portal
 <div class="container-fluid">
     <div class="row">
         <!-- Left section (2/3 of the page) -->
-        <div class="col-lg-8 col-md-8 col-sm-12 p-4">
-            <h1>How can I help?</h1>
+        <div class="col-lg-8 col-md-8 col-sm-12 p-4 mt-3">
+            <h2>How can I help?</h2>
             <p>Try asking 'What is binary?' or 'How do loops work in Python?'</p>
 
             <!-- Form row: input + icons -->
-            <form id="queryForm" action="/" method="POST" class="d-flex align-items-center">
+            <form id="queryForm" action="/" method="POST" class="d-flex align-items-center mt-4">
                 <!-- Text input -->
                 <input id="userInput" class="form-control form-control-lg me-3" name="user_input" type="text" placeholder="What in Computer Science don't you understand?">
 
@@ -53,21 +53,25 @@ Home - CS Learning Portal
                 </div>
             </form>
 
-            <!-- Learning search results -->
-            {% if hyperlinked_learning_content %}
-            <h5 class="mt-4">Search results:</h5>
-            <div class="list-group">
-                <!-- Loop through items -->
-                {% for key, value in hyperlinked_learning_content.items() %}
-                <a href="{{ value['url'] }}" target="_blank" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                        <div class="fw-semibold">{{ value['title'] }}</div>
-                        <small class="text-muted">Click to open resource</small>
-                    </div>
-                    <span class="badge bg-primary rounded-pill">Open</span>
-                </a>
-                {% endfor %}
-            </div>
+            <!-- Learning search results if a query has been submitted -->
+            {% if query_submitted %}
+                <!-- Only render block if there is at least one item in the dictionary -->
+                {% if hyperlinked_learning_content|length > 0%}
+                <h5 class="mt-4">I recommend these resources:</h5>
+                <div class="list-group">
+                    <!-- Loop through items -->
+                    {% for key, value in hyperlinked_learning_content.items() %}
+                    <a href="{{ value['url'] }}" target="_blank" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start" title="Click to visit the resource" data-bs-toggle="tooltip">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-semibold">{{ value['title'] }}</div>
+                            <small class="text-muted">type / description</small>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted mt-3">No results found for your query.</p>
+                {% endif %}
             {% endif %}
         </div>
 
@@ -79,7 +83,7 @@ Home - CS Learning Portal
             <div class="d-flex flex-wrap gap-4">
                 <!-- News card -->
                 <a href="/news" class="text-decoration-none">
-                    <div class="card border border-light rounded-0" style="width: 200px; height: 200px; cursor: pointer;">
+                    <div class="card border border-light rounded-0" style="width: 200px; height: 200px; cursor: pointer;" title="Click to visit the news page" data-bs-toggle="tooltip">
                         <div class="card-header bg-primary text-white fw-bold p-3">NEWS</div>
                         <div class="card-body text-start p-3 text-dark">
                             <p class="mb-0">What should you know about right now?</p>
@@ -88,7 +92,7 @@ Home - CS Learning Portal
                 </a>
                 <!-- Learn offline card -->
                 <a href="/learn-offline" class="text-decoration-none">
-                    <div class="card border border-light rounded-0" style="width: 200px; height: 200px; cursor: pointer;">
+                    <div class="card border border-light rounded-0" style="width: 200px; height: 200px; cursor: pointer;" title="Click to visit the offline resources page" data-bs-toggle="tooltip">
                         <div class="card-header bg-success text-white fw-bold p-3">LEARN OFFLINE</div>
                         <div class="card-body text-start p-3 text-dark">
                             <p class="mb-0">Don't have internet? Check out these resources.</p>
