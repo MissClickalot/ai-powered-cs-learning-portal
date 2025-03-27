@@ -3,15 +3,13 @@ import spacy
 import sqlite3
 import jsonify
 import secrets
-import requests
 import os
 import queue
-import sounddevice as sd
-import vosk
 from werkzeug.utils import secure_filename
 # Import custom modules from /modules folder
 from modules.password_validation import verify_password  # Import own python password validation code
 from modules import nlp  # Import own natural language processing code
+from modules import nlp_upgraded  # Import own natural language processing code
 from modules import speech_to_text  # Import own speech to text conversion and processing code
 from modules import news_api_client  # Import own code to fetch from db and communicate with a news API
 from modules import categorised_learning_materials  # Import own code to get offline material
@@ -31,10 +29,6 @@ def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Initialise the spaCy engine
-# en_core_web_sm is a pre-trained model that knows English grammar and vocabulary
-nlp_model = spacy.load("en_core_web_sm")
-
 # Function to get user by email from the database
 def get_user_by_email(email = "evie.paige.anderson@gmail.com"):
     conn = sqlite3.connect("database.db")
@@ -48,8 +42,15 @@ def get_user_by_email(email = "evie.paige.anderson@gmail.com"):
 @app.route('/', methods=['GET', 'POST'])
 # Function to execute when user accesses the root URL
 def index():
+    # Create dictionary of learning content results
     hyperlinked_learning_content = {}
+    # Track if user has submitted a query
+    query_submitted = False
+
     if request.method == 'POST':
+        # Update variable to true because a query has been submitted
+        query_submitted = True
+
         # Get input from HTML form
         # Check if speech recognition is requested
         if request.form.get('use_speech') == 'true':
@@ -89,10 +90,13 @@ def index():
 
         hyperlinked_learning_content = nlp.get_hyperlinked_content(learning_content)
 
+        print(hyperlinked_learning_content)
+
         # Use the index.html template
-        return render_template('index.html', hyperlinked_learning_content=hyperlinked_learning_content)
+        return render_template('index.html', hyperlinked_learning_content=hyperlinked_learning_content, query_submitted=query_submitted)
     # Render the HTML
-    return render_template('index.html', hyperlinked_learning_content=hyperlinked_learning_content)
+    # GET request - first time the user lands on the page
+    return render_template('index.html', hyperlinked_learning_content={}, query_submitted=query_submitted)
 
 # Upload route
 @app.route('/upload', methods=['POST'])
