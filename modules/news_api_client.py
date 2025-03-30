@@ -3,6 +3,13 @@ import sqlite3
 import http.client
 import urllib.parse
 import json
+import os  # For environment variables (API token)
+from dotenv import load_dotenv  # For environment variables (API token)
+from pathlib import Path  # For environment variables (API token)
+
+# Load environment variables from .env file found in parent directory
+env_path = Path(__file__).resolve().parents[1] / ".env"
+load_dotenv()
 
 # Function to extract news categories from database
 def get_news_categories():
@@ -24,6 +31,9 @@ def get_news_categories():
 
 # Function to make news API requests to extract articles using news category data
 def get_news(news_categories):
+    # Load token from environment
+    api_token = os.getenv("NEWS_API_TOKEN")
+
     # Establish connection to API
     conn = http.client.HTTPSConnection('api.thenewsapi.com')
 
@@ -38,8 +48,7 @@ def get_news(news_categories):
             domains = 'quantamagazine.org,bbc.co.uk'
 
         params = urllib.parse.urlencode({
-            'api_token': 'S3TlQsEPjpmBP0mjxD2EPOBWoljfPYIQIJStKiR9',
-            # 'categories': 'tech',
+            'api_token': api_token,
             'search': news_category,
             'domains': domains,
             'sort': 'published_on',
