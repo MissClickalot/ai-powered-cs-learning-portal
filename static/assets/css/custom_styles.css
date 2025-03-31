@@ -13,3 +13,43 @@
     height: 2.5em;
     font-size: 1rem;
 }
+
+/* Style content type text to stand out */
+.lozenge.content-type {
+  background-color: #8f8f8f;
+  color: #fff;
+}
+.lozenge {
+  font-size: 8pt;
+  text-transform: uppercase;
+  margin: .3em 0;
+  padding: 3px 5px 2px;
+  display: inline-block;
+}
+
+/* Style tooltips for the explanation of matched content */
+.match-tooltip {
+    position: absolute;
+    top: 1.5em;
+    left: 1.2em;
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: #333;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    white-space: nowrap;
+    z-index: 10;
+    display: none;
+}
+
+/* Desktop hover support */
+.match-info:hover .match-tooltip {
+    display: block;
+}
+
+/* Mobile/touch tap toggle */
+.match-info.show-tooltip .match-tooltip {
+    display: block;
+}
