@@ -12,15 +12,63 @@ About - CS Learning Portal
     </div>
 </section>
 <div class="container">
-    <p>
-                <span style="color: rgb(0, 0, 0);">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent lectus ante, tristique eu dapibus id, suscipit molestie nisl. Nullam eget ligula sit amet odio porttitor laoreet. Donec porttitor elit quis urna porttitor, in scelerisque neque pretium. Quisque aliquam bibendum justo, non maximus lorem ornare sed. Nam ac turpis eu urna varius scelerisque. Aliquam malesuada fringilla felis, in luctus ante posuere sit amet. Curabitur pretium, odio non dapibus pharetra, ipsum leo tincidunt leo, non maximus purus urna at sem.&nbsp;
-                </span>
-    </p>
-    <p>
-                <span style="color: rgb(0, 0, 0);">
-                    Morbi semper vel nibh id volutpat. Pellentesque fermentum pharetra orci sit amet molestie. Quisque accumsan at purus quis venenatis. Sed sodales finibus malesuada. Quisque luctus erat nisl, non dignissim diam gravida non. Etiam convallis feugiat mi. Vestibulum nec tincidunt elit. Praesent egestas lacus neque, et volutpat magna hendrerit vitae. Sed nec risus mauris. Integer ullamcorper bibendum nisi in lacinia.
-                </span>
-    </p>
+    <p>This learning portal aims to have everything you need to succeed in GCSE Computer Science, all in one place.</p>
+    <p>What does that mean?</p>
+    <h2>This portal considers the following scenarios (as some examples)...</h2>
+    <h3>I've been given a homework I don't understand</h3>
+    <p>For this you could do a simple search for the concept, or using the camera or PDF upload feature of the search, you could upload the homework task and have relevant learning material suggested to you.</p>
+    <h3>My teacher has asked us to look for a case study or research a topic in the news</h3>
+    <p>You could visit the news page to give you a starting point for further research, or just to stay up to date with Computer Science news. If you sign in, you can manage your news topic preferences too!</p>
+    <h3>I don't have any internet!</h3>
+    <p>You don't need internet to access the ebook PDFs on the offline materials page. However, internet is required for the rest of the features of the learning portal because you're getting up-to-date information from the web!</p>
+    <h3>I don't like using Artificial Intelligence (AI) or I've been warned against it</h3>
+    <p>That fits exactly with the aims of this learning portal. Here you won't be given the answer. Instead, you'll be given access to relevant material, and you'll be able to learn for yourself. This gives you more chance of understanding and remembering key concepts.</p>
+    <h3>I can't afford another subscription</h3>
+    <p>Everything here is entirely free (and it always will be)!</p>
+    <h2>Why this learning portal exists</h2>
+    <p>The AI-powered Computer Science Learning Portal is a 3rd year Computer Science undergraduate degree project. Its developer, Evie Anderson, made this portal for use in the classroom and at home predominantly for Computer Science students, but also teachers.</p>
+
+    <h2>What is the search feature for?</h2>
+    <p>The search feature uses Natural Language Processing (NLP) to suggest to you learning resources, tests and past paper questions.</p>
+    <p>It uses a mix of:</p>
+    <ul>
+        <li>Keyword matching (e.g. "binary" matches resources with "binary" in it)</li>
+        <li>Semantic matching (for example "program" might match "code" or "functions" even if those words aren’t used)</li>
+        <li>Curriculum knowledge (using manually defined topic links like "python" having GCSE syllabus links to "variables", "loops", "functions")</li>
+    </ul>
+    <h2>How does the search work, step-by-step?</h2>
+    <ol>
+        <li>First, you type a query such as "I want to learn Python" (alternatively, you might upload a picture, a PDF, or you may use your voice to ask your query).</li>
+        <li>The query is processed by:
+            <ul>
+                <li>removing unimportant words such as “the” and “but” (these are known as ‘stopwords’)</li>
+                <li>splitting the sentence into smaller chunks - like individual words or terms (this is known as 'tokenising')</li>
+                <li>reducing those words to their root forms - for example, "learning" becomes "learn" (this is known as 'lemmatising')</li>
+            </ul>
+        </li>
+        <li>The query is expanded using related terms. For example, "python" also adds "functions", "variables", "loops", etc.</li>
+        <li>The system looks at a big list of all GCSE Computer Science curriculum learning outcomes. For example, "I use variable declaration, constant declaration and value assignment." which maps to GCSE exam boards such as AQA, Eduqas, OCR, etc.</li>
+        <li>Each learning outcome is compared to your query in two ways:
+            <ul>
+                <li>Keyword overlap (how many of your words appear?)</li>
+                <li>Semantic similarity (do they mean similar things?)</li>
+            </ul>
+        </li>
+        <li>A relevancy score is calculated by combining how many keywords matched and how similar the meanings are (semantic similarity). Higher scores mean the outcome is more relevant to your query.</li>
+        <li>Each match is scored, sorted, and grouped as either:
+            <ul>
+                <li>Strong match (very relevant)</li>
+                <li>Related match (possibly useful)</li>
+            </ul>
+        </li>
+        <li>For each matched topic, the program fetches:
+            <ol>
+                <li>Learning resources</li>
+                <li>Self-testing resources</li>
+                <li>Past paper exam questions</li>
+            </ol>
+        </li>
+        <li>It shows you all three, grouped under the learning outcome they support.</li>
+    </ol>
 </div>
 {% endblock %}
