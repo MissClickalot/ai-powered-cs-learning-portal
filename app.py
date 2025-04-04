@@ -9,7 +9,6 @@ from werkzeug.utils import secure_filename
 # Import custom modules from /modules folder
 from modules.password_validation import verify_password  # Import own python password validation code
 from modules import nlp  # Import own natural language processing code
-from modules import nlp_upgraded  # Import own natural language processing code
 from modules import speech_to_text  # Import own speech to text conversion and processing code
 from modules import news_api_client  # Import own code to fetch from db and communicate with a news API
 from modules import categorised_learning_materials  # Import own code to get offline material
@@ -17,7 +16,8 @@ from modules import categorised_learning_materials  # Import own code to get off
 # Create an instance of the Flask class for the app
 app = Flask(__name__)
 
-app.secret_key = secrets.token_hex(32)  # Generates a secure 32-byte random hex key
+# Generate a secure 32-byte random hex key
+app.secret_key = secrets.token_hex(32)
 
 # Folder to temporarily store uploaded PDFs
 UPLOAD_FOLDER = 'temp_pdf_uploads'
@@ -42,61 +42,85 @@ def get_user_by_email(email = "evie.paige.anderson@gmail.com"):
 @app.route('/', methods=['GET', 'POST'])
 # Function to execute when user accesses the root URL
 def index():
-    # Create dictionary of learning content results
+    # Final results dictionary to send to the template
     hyperlinked_learning_content = {}
-    # Track if user has submitted a query
     query_submitted = False
 
     if request.method == 'POST':
-        # Update variable to true because a query has been submitted
         query_submitted = True
 
-        # Get input from HTML form
-        # Check if speech recognition is requested
-        if request.form.get('use_speech') == 'true':
-            # Get text from speech
-            # Create a queue to store audio data
-            audio_queue = queue.Queue()
-            # Load the Vosk model
-            model = speech_to_text.load_stt_model()
-            # Start speech recognition
-            query = speech_to_text.stt_recognise_speech(model, audio_queue)
-        else:
-            # Get text input from the form
-            query = request.form.get('user_input')
+        # Always use what's in the text box, regardless of how it got there (typing or speech)
+        query = request.form.get('user_input')
 
-        # DEBUG
-        print("received query:", query)
-        preprocessed_query = nlp.preprocess_query(query)
+        # Debug
+        print("Received query:", query)
 
-        # URL of the JSON API
+        # Use the upgraded NLP processor
+        processor = nlp.NLPProcessor()
+
+        # Step 1: Preprocess query with concept alias expansion
+        expanded_terms, original_query = processor.preprocess_query(query)
+
+        # Step 2: Get all outcomes
         url = "https://bit-by-bit.org/api/learning-outcomes?_format=json"
-        # Define headers
-        headers = {
-            "User-Agent": "Mozilla/5.0"
-        }
-        # Fetch the JSON data
-        json_data = nlp.fetch_json_data(url, headers)
+        headers = {"User-Agent": "Mozilla/5.0"}
+        all_outcomes = processor.fetch_json_data(url, headers)
 
-        # Filter the JSON data to match keywords
-        filtered_data_list = nlp.filter_json(json_data, preprocessed_query)
+        # Step 3: Score and filter
+        matches = processor.filter_and_rank_outcomes(all_outcomes, expanded_terms, original_query)
+        strong = matches["strong_matches"]
+        related = matches["related_matches"]
+        metadata = matches["metadata"]
 
-        # Get learning content which matches the outcome IDs
-        learning_content = nlp.get_learning_content(filtered_data_list, "learning-by-outcome", headers)
-        # Get testing content which matches the outcome IDs
-        testing_content = nlp.get_learning_content(filtered_data_list, "self-test-by-outcome", headers)
-        # Get GCSE questions content which matches the outcome IDs
-        gcse_questions_content = nlp.get_learning_content(filtered_data_list, "gcse-questions-by-outcome", headers)
+        # Step 4: Fetch all content types in parallel
+        learning = processor.get_learning_content(strong + related, "learning-by-outcome", headers, metadata)
+        testing = processor.get_learning_content(strong + related, "self-test-by-outcome", headers, metadata)
+        exams = processor.get_learning_content(strong + related, "gcse-questions-by-outcome", headers, metadata)
 
-        hyperlinked_learning_content = nlp.get_hyperlinked_content(learning_content)
+        # Step 5: Enrich content with metadata
+        learning_dict = processor.get_hyperlinked_content(learning, metadata)
+        testing_dict = processor.get_hyperlinked_content(testing, metadata)
+        exams_dict = processor.get_hyperlinked_content(exams, metadata)
 
-        print(hyperlinked_learning_content)
+        # Step 6: Merge all content by outcome ID
+        merged = {}
+        def insert(item, content_type):
+            outcome_id = item.get("outcome_id")
+            if not outcome_id:
+                return
+            if outcome_id not in merged:
+                merged[outcome_id] = {
+                    "outcome_text": item.get("outcome_text"),
+                    "title": item.get("title"),
+                    "url": item.get("url"),
+                    "teaser": item.get("teaser"),
+                    "score": item.get("score"),
+                    "matched_terms": item.get("matched_terms", []),
+                    "prerequisites": item.get("prerequisites", []),
+                    "learning": None,
+                    "test": None,
+                    "exam": None
+                }
+            merged[outcome_id][content_type] = {
+                "title": item.get("title"),
+                "url": item.get("url"),
+                "teaser": item.get("teaser")
+            }
 
-        # Use the index.html template
-        return render_template('index.html', hyperlinked_learning_content=hyperlinked_learning_content, query_submitted=query_submitted)
-    # Render the HTML
-    # GET request - first time the user lands on the page
-    return render_template('index.html', hyperlinked_learning_content={}, query_submitted=query_submitted)
+        for item in learning_dict.values():
+            insert(item, "learning")
+        for item in testing_dict.values():
+            insert(item, "test")
+        for item in exams_dict.values():
+            insert(item, "exam")
+
+        # Pass the full merged object or just the learning part depending on how index.html handles it
+        hyperlinked_learning_content = merged
+
+        return render_template('index.html', hyperlinked_learning_content=hyperlinked_learning_content, query_submitted=True)
+
+    # GET method fallback
+    return render_template('index.html', hyperlinked_learning_content={}, query_submitted=False)
 
 # Upload route
 @app.route('/upload', methods=['POST'])
