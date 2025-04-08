@@ -45,7 +45,9 @@ def clean_pdf_text(raw_text: str) -> str:
 
     return joined.strip()
 
+"""
 # Testing
 pdf_text = extract_text_from_pdf("../example_homework.pdf")
 cleaned = clean_pdf_text(pdf_text)
 print(cleaned)
+"""

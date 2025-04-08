@@ -1,7 +1,6 @@
 from flask import Flask, request, render_template, send_from_directory, jsonify
 import spacy
 import sqlite3
-import jsonify
 import secrets
 import os
 import queue
@@ -12,6 +11,7 @@ from modules import nlp  # Import own natural language processing code
 from modules import speech_to_text  # Import own speech to text conversion and processing code
 from modules import news_api_client  # Import own code to fetch from db and communicate with a news API
 from modules import categorised_learning_materials  # Import own code to get offline material
+from modules import pdf_to_text  # Import own PDF to text code
 
 # Create an instance of the Flask class for the app
 app = Flask(__name__)
@@ -55,7 +55,7 @@ def index():
         # Debug
         print("Received query:", query)
 
-        # Use the upgraded NLP processor
+        # Use the NLP processor
         processor = nlp.NLPProcessor()
 
         # Step 1: Preprocess query with concept alias expansion
@@ -142,7 +142,11 @@ def upload_pdf():
 
         file.save(save_path)
 
-        return jsonify({'success': True, 'message': 'File uploaded successfully', 'filename': filename}), 200
+        # Extract and clean
+        raw_text = pdf_to_text.extract_text_from_pdf(save_path)
+        cleaned_text = pdf_to_text.clean_pdf_text(raw_text)
+
+        return jsonify({'success': True, 'text': cleaned_text}), 200
 
     return jsonify({'success': False, 'message': 'Invalid file type'}), 400
 
