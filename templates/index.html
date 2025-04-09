@@ -16,13 +16,7 @@ Home - CS Learning Portal
             <!-- Form row: input and icons -->
             <form id="queryForm" action="/" method="POST" class="d-flex align-items-center mt-4">
                 <!-- Text input -->
-                <textarea id="userInput"
-                          class="form-control form-control-lg me-3"
-                          name="user_input"
-                          placeholder="What in Computer Science don't you understand?"
-                          rows="2"
-                          spellcheck="true"
-                          style="resize: none; overflow: hidden;"></textarea>
+                <input id="userInput" class="form-control form-control-lg me-3" name="user_input" type="text" placeholder="What in Computer Science don't you understand?" spellcheck="true">
 
                 <!-- Hidden field to indicate if speech was used -->
                 <input type="hidden" name="use_speech" id="useSpeech" value="false">
