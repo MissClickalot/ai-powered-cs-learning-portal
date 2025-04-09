@@ -21,7 +21,7 @@ app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
 
 # Folder to temporarily store uploaded PDFs
-UPLOAD_FOLDER = 'temp_pdf_uploads'
+UPLOAD_FOLDER = 'temp_uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Only allow the following file types
 ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg'}
@@ -173,13 +173,21 @@ def upload_image():
     if ext not in {'jpg', 'jpeg', 'png'}:
         return jsonify({'success': False, 'message': 'Invalid image file type'}), 400
 
+    # Save to temp folder (same as PDFs)
+    filename = secure_filename(file.filename)
+    save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    file.save(save_path)
+
     try:
         from modules.image_to_text import extract_text_from_image
-        raw_text = extract_text_from_image(file)
         from modules.pdf_to_text import clean_pdf_text
-        cleaned_text = clean_pdf_text(raw_text)
 
-        return jsonify({'success': True, 'text': cleaned_text}), 200
+        # OCR + cleaning
+        raw_text = extract_text_from_image(save_path)
+        cleaned = clean_pdf_text(raw_text)
+
+        return jsonify({'success': True, 'text': cleaned}), 200
     except Exception as e:
         return jsonify({'success': False, 'message': f'OCR failed: {str(e)}'}), 500
 
