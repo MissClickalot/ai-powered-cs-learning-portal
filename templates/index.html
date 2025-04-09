@@ -277,7 +277,7 @@ Home - CS Learning Portal
     });
 </script>
 
-<!-- JavaScript for image capture (triggered if the device is mobile) -->
+<!-- JavaScript for image capture (triggered if the device is mobile) to only show icon if mobile-->
 <script>
     function isMobileDevice() {
         return /Android|webOS|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
@@ -295,6 +295,48 @@ Home - CS Learning Portal
     }
 
     document.addEventListener("DOMContentLoaded", toggleCameraUploadVisibility);
+</script>
+
+<!-- JavaScript for image capture logic -->
+<script>
+    document.getElementById("cameraUploadTrigger").addEventListener("click", function () {
+        document.getElementById("cameraFileInput").click();
+    });
+
+    document.getElementById("cameraFileInput").addEventListener("change", function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        const MAX_FILE_SIZE = 5 * 1024 * 1024;
+        if (file.size > MAX_FILE_SIZE) {
+            alert("Image is too large. Please upload a file under 5MB.");
+            this.value = "";
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file); // Backend expects 'file'
+
+        fetch("/upload-image", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById("userInput").value = data.text;
+                document.getElementById("useSpeech").value = "false";
+                document.getElementById("queryForm").submit();
+            } else {
+                alert("Image upload failed: " + data.message);
+            }
+        })
+        .catch(() => {
+            alert("Something went wrong with image upload.");
+        });
+
+        this.value = ""; // Reset file input
+    });
 </script>
 
 <!-- JavaScript for query relevancy explanation tooltip -->
