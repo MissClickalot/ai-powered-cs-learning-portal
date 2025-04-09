@@ -62,9 +62,19 @@ CONCEPT_ALIASES = {
     "electronics": ["circuits", "transistors", "resistors", "sensors", "input devices", "output devices", "microcontrollers"]
 }
 
+# Whitelist of words that TextBlob is incorrectly changing - add to list as more appear in testing
+COMMON_WORDS = {"what"}
+
 def correct_spelling(text: str) -> str:
-    blob = TextBlob(text)
-    return str(blob.correct())
+    corrected_words = []
+    for word in text.split():
+        # Only correct if the word is not in your common word list
+        if word.lower() in COMMON_WORDS:
+            corrected_words.append(word)
+        else:
+            corrected_words.append(str(TextBlob(word).correct()))
+
+    return " ".join(corrected_words)
 
 class NLPProcessor:
     def __init__(self):
