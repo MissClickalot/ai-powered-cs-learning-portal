@@ -24,17 +24,23 @@ Home - CS Learning Portal
                 <!-- Input icons container -->
                 <div class="d-flex icon-bar gap-2 mt-2">
 
-                    <!-- Search History -->
+                    <!-- Search history -->
                     <a href="/history" class="link-secondary" title="View your search history" data-bs-toggle="tooltip">
                         <img src="../static/assets/bootstrap/bootstrap-icons/clock-history.svg" alt="History icon" style="width: 1.5em; height: 1.5em;">
                     </a>
 
-                    <!-- Camera Upload -->
-                    <a href="#" class="link-dark" title="Use your camera to upload a photo of your work" data-bs-toggle="tooltip" style="cursor: pointer;">
-                        <img src="../static/assets/bootstrap/bootstrap-icons/camera-fill.svg" alt="Camera icon" style="width: 2em; height: 2em;">
+                    <!-- Camera upload (only shown on mobile devices via JS) -->
+                    <a id="cameraUploadTrigger" class="link-dark" title="Take a photo"
+                       data-bs-toggle="tooltip" style="cursor: pointer; display: none;">
+                        <img src="../static/assets/bootstrap/bootstrap-icons/camera-fill.svg"
+                             alt="Camera icon" style="width: 2em; height: 2em;">
                     </a>
 
-                    <!-- Attach File -->
+                    <!-- Hidden file input (stays available for mobile users) -->
+                    <!-- accept="image/*" allows only image uploads and capture="environment" opens the back camera -->
+                    <input type="file" id="cameraFileInput" accept="image/*" capture="environment" style="display: none;">
+
+                    <!-- Attach file -->
                     <a id="pdfUploadTrigger" class="link-dark" title="Upload a PDF from your device" data-bs-toggle="tooltip" style="cursor: pointer;">
                         <img src="../static/assets/bootstrap/bootstrap-icons/paperclip.svg" alt="Attach file icon" style="width: 2em; height: 2em;">
                     </a>
@@ -271,6 +277,26 @@ Home - CS Learning Portal
         // Reset file input for next upload
         this.value = "";
     });
+</script>
+
+<!-- JavaScript for image upload (triggered if the device is mobile) -->
+<script>
+    function isMobileDevice() {
+        return /Android|webOS|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+    }
+
+    function toggleCameraUploadVisibility() {
+        const cameraIcon = document.getElementById("cameraUploadTrigger");
+        if (!cameraIcon) return;
+
+        if (isMobileDevice()) {
+            cameraIcon.style.display = "inline-block";
+        } else {
+            cameraIcon.style.display = "none";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", toggleCameraUploadVisibility);
 </script>
 
 <!-- JavaScript for query relevancy explanation tooltip -->
