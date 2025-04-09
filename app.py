@@ -247,7 +247,7 @@ def manifest():
 
 @app.route('/service_worker.js')
 def service_worker():
-    return send_from_directory('static', 'service_worker.js')
+    return app.send_static_file('service_worker.js')
 
 if __name__ == '__main__':
     # Start the Flask development server
