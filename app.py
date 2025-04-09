@@ -55,6 +55,15 @@ def index():
         # Debug
         print("Received query:", query)
 
+        # Apply spellchecking
+        corrected_spelling = nlp.correct_spelling(query)
+
+        # Debug
+        print("Spellchecked query:", corrected_spelling)
+
+        # Update query variable with the spellchecked version
+        query = corrected_spelling
+
         # Use the NLP processor
         processor = nlp.NLPProcessor()
 
