@@ -12,6 +12,7 @@ from modules import speech_to_text  # Import own speech to text conversion and p
 from modules import news_api_client  # Import own code to fetch from db and communicate with a news API
 from modules import categorised_learning_materials  # Import own code to get offline material
 from modules import pdf_to_text  # Import own PDF to text code
+from modules import image_to_text  # Import own image to text (OCR) code
 
 # Create an instance of the Flask class for the app
 app = Flask(__name__)
@@ -22,8 +23,8 @@ app.secret_key = secrets.token_hex(32)
 # Folder to temporarily store uploaded PDFs
 UPLOAD_FOLDER = 'temp_pdf_uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-# Only allow PDF files
-ALLOWED_EXTENSIONS = {'pdf'}
+# Only allow the following file types
+ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg'}
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -134,15 +135,15 @@ def index():
 # Upload route
 @app.route('/upload', methods=['POST'])
 def upload_pdf():
-    if 'pdf_file' not in request.files:
+    if 'file' not in request.files:
         return jsonify({'success': False, 'message': 'No file part'}), 400
 
-    file = request.files['pdf_file']
+    file = request.files.get('file')
 
     if file.filename == '':
         return jsonify({'success': False, 'message': 'No file selected'}), 400
 
-    if file and allowed_file(file.filename):
+    if file and allowed_file(file.filename) and file.filename.lower().endswith('.pdf'):
         filename = secure_filename(file.filename)
         save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
@@ -158,6 +159,29 @@ def upload_pdf():
         return jsonify({'success': True, 'text': cleaned_text}), 200
 
     return jsonify({'success': False, 'message': 'Invalid file type'}), 400
+
+# Image upload route
+@app.route('/upload-image', methods=['POST'])
+def upload_image():
+    file = request.files.get('file')
+
+    if not file or file.filename == '':
+        return jsonify({'success': False, 'message': 'No file uploaded'}), 400
+
+    # Check extension rather than filename string
+    ext = file.filename.rsplit('.', 1)[-1].lower()
+    if ext not in {'jpg', 'jpeg', 'png'}:
+        return jsonify({'success': False, 'message': 'Invalid image file type'}), 400
+
+    try:
+        from modules.image_to_text import extract_text_from_image
+        raw_text = extract_text_from_image(file)
+        from modules.pdf_to_text import clean_pdf_text
+        cleaned_text = clean_pdf_text(raw_text)
+
+        return jsonify({'success': True, 'text': cleaned_text}), 200
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'OCR failed: {str(e)}'}), 500
 
 # Define a route for each page
 @app.route('/about')

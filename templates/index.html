@@ -41,12 +41,12 @@ Home - CS Learning Portal
                     <input type="file" id="cameraFileInput" accept="image/*" capture="environment" style="display: none;">
 
                     <!-- Attach file -->
-                    <a id="pdfUploadTrigger" class="link-dark" title="Upload a PDF from your device" data-bs-toggle="tooltip" style="cursor: pointer;">
+                    <a id="fileUploadTrigger" class="link-dark" title="Upload a PDF or image from your device" data-bs-toggle="tooltip" style="cursor: pointer;">
                         <img src="../static/assets/bootstrap/bootstrap-icons/paperclip.svg" alt="Attach file icon" style="width: 2em; height: 2em;">
                     </a>
 
-                    <!-- Hidden file input (PDF only) -->
-                    <input type="file" id="fileUpload" accept="application/pdf" style="display: none;">
+                    <!-- Hidden file input (PDF or image) -->
+                    <input type="file" id="fileUpload" accept=".pdf,.png,.jpg,.jpeg" style="display: none;">
 
                     <!-- File name display -->
                     <div id="fileNameDisplay" class="mt-2 small text-muted"></div>
@@ -102,7 +102,7 @@ Home - CS Learning Portal
                     </div>
                     {% endif %}
 
-                    <!-- Self Test -->
+                    <!-- Self test -->
                     {% if outcome.test %}
                     <div class="mt-2">
                         <span class="lozenge content-type">Self test</span><br>
@@ -219,67 +219,65 @@ Home - CS Learning Portal
     });
 </script>
 
-<!-- JavaScript for PDF validation and file selection feedback -->
+<!-- JavaScript for PDF and image upload via paperclip -->
 <script>
     // Max file size (5MB in bytes)
     const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
     // Trigger the file input when the paperclip is clicked
-    document.getElementById('pdfUploadTrigger').addEventListener('click', function () {
+    document.getElementById('fileUploadTrigger').addEventListener('click', function () {
         document.getElementById('fileUpload').click();
     });
 
-    // Handle file selection and auto-upload if correct size
+    // Handle file selection (PDF or image) and upload
     document.getElementById('fileUpload').addEventListener('change', function () {
         const file = this.files[0];
-
         if (!file) return;
 
-        if (file.type !== "application/pdf") {
-            alert("Please upload a valid PDF file.");
+        const isPdf = file.type === "application/pdf";
+        const isImage = file.type.startsWith("image/");
+
+        if (!isPdf && !isImage) {
+            alert("Please upload a valid PDF or image file.");
             this.value = "";
             return;
         }
 
         if (file.size > MAX_FILE_SIZE) {
-            alert("PDF file is too large. Please upload a file under 5MB.");
+            alert("File is too large. Please upload a file under 5MB.");
             this.value = "";
             return;
         }
 
-        // Prepare and send form data
         const formData = new FormData();
-        formData.append("pdf_file", file); // Adjust key if your backend expects something else
+        formData.append("file", file); // Use a unified key on the backend
 
-        fetch("/upload", {
+        // Choose endpoint based on file type
+        const endpoint = isPdf ? "/upload" : "/upload-image";
+
+        fetch(endpoint, {
             method: "POST",
             body: formData
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Autofill the query field with cleaned PDF text
                 document.getElementById("userInput").value = data.text;
-
-                // Indicate it's not from speech
                 document.getElementById("useSpeech").value = "false";
-
-                // Submit the form (re-uses the existing POST to /)
                 document.getElementById("queryForm").submit();
             } else {
                 alert("Upload failed: " + data.message);
             }
         })
         .catch(() => {
-            alert("Something went wrong. Check your connection and try again.");
+            alert("Something went wrong. Please try again.");
         });
 
-        // Reset file input for next upload
-        this.value = "";
+        this.value = ""; // Reset input
     });
 </script>
 
-<!-- JavaScript for image upload (triggered if the device is mobile) -->
+<!-- JavaScript for image capture (triggered if the device is mobile) -->
 <script>
     function isMobileDevice() {
         return /Android|webOS|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
