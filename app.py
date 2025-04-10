@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_from_directory, jsonify
+from flask import Flask, request, render_template, send_from_directory, jsonify, flash
 import spacy
 import sqlite3
 import secrets
@@ -76,8 +76,16 @@ def index():
         headers = {"User-Agent": "Mozilla/5.0"}
         all_outcomes = processor.fetch_json_data(url, headers)
 
-        # Step 3: Score and filter
-        matches = processor.filter_and_rank_outcomes(all_outcomes, expanded_terms, original_query)
+        # Step 3: Score and filter (with error handling for empty or invalid input)
+        try:
+            matches = processor.filter_and_rank_outcomes(all_outcomes, expanded_terms, original_query)
+        except ValueError as e:
+            print("NLP skipped due to input issue:", e)
+            flash("The uploaded text couldn’t be processed. Please try a clearer image or reword your question.", "warning")
+            return render_template('index.html', hyperlinked_learning_content={}, query_submitted=True)
+        except Exception as e:
+            print("Unexpected NLP error:", e)
+            return render_template('index.html', hyperlinked_learning_content={}, query_submitted=True)
         strong = matches["strong_matches"]
         related = matches["related_matches"]
         metadata = matches["metadata"]
@@ -135,10 +143,10 @@ def index():
 # Upload route
 @app.route('/upload', methods=['POST'])
 def upload_pdf():
-    if 'file' not in request.files:
+    if 'pdf_file' not in request.files:
         return jsonify({'success': False, 'message': 'No file part'}), 400
 
-    file = request.files.get('file')
+    file = request.files.get('pdf_file')
 
     if file.filename == '':
         return jsonify({'success': False, 'message': 'No file selected'}), 400
@@ -163,17 +171,23 @@ def upload_pdf():
 # Image upload route
 @app.route('/upload-image', methods=['POST'])
 def upload_image():
+    # Get the uploaded image file
     file = request.files.get('file')
 
+    # Get the user's image type selection from the form ("handwritten" or "printed")
+    # Default to handwritten if nothing is sent
+    image_type = request.form.get('image_type', 'handwritten')
+
+    # Ensure there's a file and it has a filename
     if not file or file.filename == '':
         return jsonify({'success': False, 'message': 'No file uploaded'}), 400
 
-    # Check extension rather than filename string
+    # Check that the file extension is a valid image type
     ext = file.filename.rsplit('.', 1)[-1].lower()
     if ext not in {'jpg', 'jpeg', 'png'}:
         return jsonify({'success': False, 'message': 'Invalid image file type'}), 400
 
-    # Save to temp folder (same as PDFs)
+    # Save the file to the temporary upload folder (shared with PDFs)
     filename = secure_filename(file.filename)
     save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -183,13 +197,33 @@ def upload_image():
         from modules.image_to_text import extract_text_from_image
         from modules.pdf_to_text import clean_pdf_text
 
-        # OCR + cleaning
-        raw_text = extract_text_from_image(save_path)
-        cleaned = clean_pdf_text(raw_text)
+        # Log info for debugging
+        print("Image saved to:", save_path)
+        print("User selected image type:", image_type)
 
+        # Convert the user's string choice into a boolean
+        # If it's handwritten, set flag to True - this affects preprocessing
+        handwritten = image_type == "handwritten"
+
+        # Run OCR on the saved image using the appropriate pipeline
+        raw_text = extract_text_from_image(save_path, handwritten=handwritten)
+        print("Raw OCR output:", raw_text)
+
+        # Check if OCR returned anything useful
+        if not raw_text.strip():
+            return jsonify({'success': False, 'message': 'No readable text detected in the image.'}), 200
+
+        # Clean up the OCR extacted text
+        cleaned = clean_pdf_text(raw_text)
+        print("Cleaned text:", cleaned)
+
+        # Return the final cleaned text to the frontend
         return jsonify({'success': True, 'text': cleaned}), 200
+
     except Exception as e:
-        return jsonify({'success': False, 'message': f'OCR failed: {str(e)}'}), 500
+        # If anything goes wrong (e.g. OCR crash), return a helpful message
+        print("OCR Exception:", str(e))
+        return jsonify({'success': False, 'message': 'OCR processing failed.'}), 500
 
 # Define a route for each page
 @app.route('/about')

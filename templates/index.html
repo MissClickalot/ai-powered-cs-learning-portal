@@ -51,6 +51,20 @@ Home - CS Learning Portal
                     <!-- File name display -->
                     <div id="fileNameDisplay" class="mt-2 small text-muted"></div>
 
+                    <!-- Image upload modal -->
+                    <div class="modal fade" id="imageTypeModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content p-4">
+                                <h5 class="mb-3">What type of image did you upload?</h5>
+                                <p>Knowing the type of text helps the AI to scan the image!</p>
+                                <div class="d-flex justify-content-around">
+                                    <button id="chooseHandwritten" class="btn btn-outline-primary">Handwritten notes</button>
+                                    <button id="choosePrinted" class="btn btn-outline-primary">Printed text</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Microphone -->
                     <a id="micButton" class="link-dark" title="Click to speak your question aloud" data-bs-toggle="tooltip" style="cursor: pointer;">
                         <img src="../static/assets/bootstrap/bootstrap-icons/mic-fill.svg" alt="Microphone icon" style="width: 2em; height: 2em;">
@@ -203,7 +217,7 @@ Home - CS Learning Portal
 
         recognition.onresult = function(event) {
             const transcript = event.results[0][0].transcript;
-            console.log("Recognized Speech:", transcript);
+            console.log("Recognised Speech:", transcript);
 
             // Fill input with speech-to-text result
             document.getElementById("userInput").value = transcript;
@@ -219,82 +233,133 @@ Home - CS Learning Portal
     });
 </script>
 
-<!-- JavaScript for PDF and image upload via paperclip -->
+<!-- JavaScript to trigger the hidden file input when the paperclip is clicked -->
 <script>
-    // Max file size (5MB in bytes)
-    const MAX_FILE_SIZE = 5 * 1024 * 1024;
-
-    // Trigger the file input when the paperclip is clicked
     document.getElementById('fileUploadTrigger').addEventListener('click', function () {
         document.getElementById('fileUpload').click();
     });
+</script>
 
-    // Handle file selection (PDF or image) and upload
+<!-- JavaScript for PDF and image upload via paperclip -->
+<script>
+    // Hold the uploaded image file temporarily so it can be submitted after the user selects the image type
+    let uploadedFile = null;
+
     document.getElementById('fileUpload').addEventListener('change', function () {
         const file = this.files[0];
         if (!file) return;
 
-        const isPdf = file.type === "application/pdf";
-        const isImage = file.type.startsWith("image/");
-
-        if (!isPdf && !isImage) {
-            alert("Please upload a valid PDF or image file.");
-            this.value = "";
-            return;
-        }
-
+        const MAX_FILE_SIZE = 5 * 1024 * 1024;
         if (file.size > MAX_FILE_SIZE) {
             alert("File is too large. Please upload a file under 5MB.");
             this.value = "";
             return;
         }
 
+        const fileType = file.type;
+
+        // Image upload where MIME type == image
+        if (fileType.startsWith("image/")) {
+            uploadedFile = file;
+            // Show image type modal
+            const modal = new bootstrap.Modal(document.getElementById('imageTypeModal'));
+            modal.show();
+
+        // PDF upload - send immediately
+        } else if (fileType === "application/pdf") {
+            const formData = new FormData();
+            formData.append("pdf_file", file);
+
+            fetch("/upload", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("userInput").value = data.text;
+                    document.getElementById("useSpeech").value = "false";
+                    document.getElementById("queryForm").submit();
+                } else {
+                    alert("Upload failed: " + data.message);
+                }
+            })
+            .catch(() => {
+                alert("Something went wrong. Check your connection and try again.");
+            });
+        } else {
+            alert("Unsupported file type. Please upload a PDF or image.");
+        }
+
+        this.value = ""; // Reset for next upload
+    });
+</script>
+
+<!-- -->
+<script>
+    // Handle image uploads with user input on type (handwritten vs printed)
+    document.getElementById("chooseHandwritten").addEventListener("click", function () {
+        uploadImageWithType("handwritten");
+    });
+
+    document.getElementById("choosePrinted").addEventListener("click", function () {
+        uploadImageWithType("printed");
+    });
+
+    function uploadImageWithType(imageType) {
+        if (!uploadedFile) return;
+
         const formData = new FormData();
-        formData.append("file", file); // Use a unified key on the backend
+        formData.append("file", uploadedFile);
+        formData.append("image_type", imageType);
 
-        // Choose endpoint based on file type
-        const endpoint = isPdf ? "/upload" : "/upload-image";
-
-        fetch(endpoint, {
+        // Once type is selected, send the image and type to the backend (/upload-image)
+        fetch("/upload-image", {
             method: "POST",
             body: formData
         })
         .then(response => response.json())
         .then(data => {
+            // DEBUG
+            console.log("Response from /upload-image:", data);
             if (data.success) {
                 document.getElementById("userInput").value = data.text;
                 document.getElementById("useSpeech").value = "false";
                 document.getElementById("queryForm").submit();
             } else {
-                alert("Upload failed: " + data.message);
+                alert("Image upload failed: " + data.message);
             }
         })
         .catch(() => {
-            alert("Something went wrong. Please try again.");
+            alert("Something went wrong during image upload.");
         });
 
-        this.value = ""; // Reset input
-    });
+        // Hide modal and reset
+        const modal = bootstrap.Modal.getInstance(document.getElementById("imageTypeModal"));
+        modal.hide();
+        uploadedFile = null;
+    }
 </script>
+
 
 <!-- JavaScript for image capture (triggered if the device is mobile) to only show icon if mobile-->
 <script>
-    function isMobileDevice() {
-        return /Android|webOS|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
-    }
-
-    function toggleCameraUploadVisibility() {
-        const cameraIcon = document.getElementById("cameraUploadTrigger");
-        if (!cameraIcon) return;
-
-        if (isMobileDevice()) {
-            cameraIcon.style.display = "inline-block";
-        } else {
-            cameraIcon.style.display = "none";
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
         }
-    }
 
-    document.addEventListener("DOMContentLoaded", toggleCameraUploadVisibility);
+        function toggleCameraUploadVisibility() {
+            const cameraIcon = document.getElementById("cameraUploadTrigger");
+            if (!cameraIcon) return;
+
+            if (isMobileDevice()) {
+                cameraIcon.style.display = "inline-block";
+            } else {
+                cameraIcon.style.display = "none";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", toggleCameraUploadVisibility);
 </script>
 
 <!-- JavaScript for image capture logic -->
