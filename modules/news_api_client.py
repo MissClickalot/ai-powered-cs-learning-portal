@@ -71,7 +71,8 @@ def get_news(news_categories):
                     "title": article["title"],
                     "description": article["description"],
                     "url": article["url"],
-                    "date": article["published_at"][:10]  # Extracts YYYY-MM-DD
+                    "date": article["published_at"][:10],  # Extracts YYYY-MM-DD
+                    "source": article["source"]
                 }
                 for article in articles
             ]
