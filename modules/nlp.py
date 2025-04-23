@@ -18,15 +18,20 @@ CONCEPT_ALIASES = {
     "binary": ["bit", "byte", "nibble", "base 2", "denary", "binary addition", "binary shifts", "overflow", "place value", "two's complement"],
     "hexadecimal": ["hex", "base 16", "binary conversion", "memory addresses", "colour codes"],
     "ascii": ["character sets", "binary code", "unicode", "encoding"],
-    "images": ["pixels", "resolution", "colour depth", "bitmap", "metadata"],
+    "image": ["pixel", "resolution", "colour depth", "bitmap", "metadata"],
     "sound": ["sampling", "sample rate", "sample resolution", "bit depth", "file size"],
     "compression": ["lossy", "lossless", "run length encoding", "RLE", "huffman coding"],
+    "kb": ["kib", "kilobyte", "kibibyte"],
+    "mb": ["mib", "megabyte", "mebibyte"],
+    "gb": ["gib", "gigabyte", "gibibyte"],
+    "tb": ["tib", "terabyte", "tebibyte"],
+    "pb": ["pib", "petabyte", "pebibyte"],
 
     # Boolean Logic
     "logic": ["truth tables", "AND", "OR", "NOT", "logic gates", "circuit diagrams", "boolean"],
 
     # Algorithmic Thinking
-    "algorithms": ["sorting", "searching", "binary search", "linear search", "merge sort", "bubble sort", "efficiency", "inputs", "outputs"],
+    "algorithm": ["sorting", "searching", "binary search", "linear search", "merge sort", "bubble sort", "efficiency", "inputs", "outputs"],
 
     # Programming
     "python": ["code", "variables", "loops", "syntax", "functions", "exceptions", "strings", "interpreter", "file handling", "data types"],
@@ -63,7 +68,7 @@ CONCEPT_ALIASES = {
 }
 
 # Whitelist of words that TextBlob is incorrectly changing - add to list as more appear in testing
-COMMON_WORDS = {"what"}
+COMMON_WORDS = {"what", "denary"}
 
 def correct_spelling(text: str) -> str:
     corrected_words = []
@@ -137,10 +142,24 @@ class NLPProcessor:
         outcome_metadata = {}
         seen_ids = set()
 
-        # STEP 1: Batch encode all expanded query terms
-        # This avoids encoding each word individually in the loop.
+        # DEBUG
+        print("Original query:", original_query)
+        print("Expanded terms:", expanded_terms)
+
+        # STEP 1: Batch encode all expanded query term
+        # This avoids encoding each word individually in the loop
         # It returns a tensor matrix of embeddings for each term in expanded_terms
+
+        # If the expanded query terms are empty or contain only blank strings, then it cannot generate embeddings (would return a tensor with invalid shape)
+        # This prevents the NLP pipeline from crashing downstream during similarity scoring
+        if not expanded_terms or all(not term.strip() for term in expanded_terms):
+            raise ValueError("Expanded terms are empty or unusable - skipping NLP.")
+
         term_embeddings = self.semantic_model.encode(expanded_terms, convert_to_tensor=True)
+
+        # DEBUG
+        print("Term embeddings shape:", term_embeddings.shape)
+        print("Type of expanded_terms:", type(expanded_terms))
 
         # STEP 2: Loop through every learning outcome from the dataset
         for item in data:
