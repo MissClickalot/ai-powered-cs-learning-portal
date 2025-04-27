@@ -20,17 +20,15 @@ def validate_password(password):
 # Argon2 is one of the most secure hashing algorithms
 # Argon2 automatically generates and stores a salt within the hash
 def hash_password(password):
-    # Hashes the password Argon2 with a salt
-    ph = PasswordHasher()
-    hashed_password = ph.hash(password)
-    return hashed_password
+    password_hash = PasswordHasher()
+    return password_hash.hash(password)
 
 # Verify the password against the Argon2 hash
 def verify_password(input_password, hashed_password):
     # Verifies the input password against the hashed password.
-    ph = PasswordHasher()
+    password_hash = PasswordHasher()
     try:
-        return ph.verify(hashed_password, input_password)
+        return password_hash.verify(hashed_password, input_password)
     except VerifyMismatchError:
         # Password is incorrect
         return False

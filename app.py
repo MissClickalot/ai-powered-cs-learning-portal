@@ -1,18 +1,21 @@
-from flask import Flask, request, render_template, send_from_directory, jsonify, flash
-import spacy
+from flask import Flask, request, render_template, send_from_directory, jsonify, flash, redirect, url_for, session
 import sqlite3
 import secrets
 import os
-import queue
 from werkzeug.utils import secure_filename
 # Import custom modules from /modules folder
-from modules.password_validation import verify_password  # Import own python password validation code
+from modules import password_validation  # Import own python password validation code
 from modules import nlp  # Import own natural language processing code
 from modules import speech_to_text  # Import own speech to text conversion and processing code
 from modules import news_api_client  # Import own code to fetch from db and communicate with a news API
 from modules import categorised_learning_materials  # Import own code to get offline material
 from modules import pdf_to_text  # Import own PDF to text code
 from modules import image_to_text  # Import own image to text (OCR) code
+from modules import services # Import own code to interact with database
+import spacy
+from enum import verify
+import queue
+from select import select
 
 # Create an instance of the Flask class for the app
 app = Flask(__name__)
@@ -213,7 +216,7 @@ def upload_image():
         if not raw_text.strip():
             return jsonify({'success': False, 'message': 'No readable text detected in the image.'}), 200
 
-        # Clean up the OCR extacted text
+        # Clean up the OCR extracted text
         cleaned = clean_pdf_text(raw_text)
         print("Cleaned text:", cleaned)
 
@@ -268,43 +271,61 @@ def news():
 
 @app.route('/profile')
 def profile():
-    return render_template('profile.html')
+    # Check if the user is logged in
+    if 'user_id' not in session:
+        # If not logged in then send them to sign in
+        return redirect(url_for('sign_in'))
 
-@app.route('/sign-in')
-def sign_in_page():
-    return render_template('sign-in.html')
+    user_id = session.get('user_id')
+    user = services.select_user_by_id(user_id)
+    # Set the value of email as the 1st field of the `user` table
+    email = user[1]
+    return render_template('profile.html', email=email)
 
-@app.route('/sign-in', methods=['POST'])
+@app.route('/sign-in', methods=['POST', 'GET'])
 def sign_in():
-    data = request.json  # Expecting JSON input
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        # Match user's email to database record
+        user = services.select_user_by_email(email)
 
-    if not data:
-        return jsonify({"error": "Invalid request format"}), 400
-
-    email = data.get("email")
-    password = data.get("password")
-
-    # Database lookup: Get user by email
-    user = get_user_by_email(email)
-
-    if not user:
-        return jsonify({"error": "Invalid email or password."}), 401
-
-    user_id, email, hashed_password = user  # Extract database values
-
-    # Verify password using argon2
-    try:
-        if verify_password(hashed_password, password):
-            session["user_id"] = user_id  # Store user session
-            return jsonify({"message": "Login successful."}), 200
+        # If the user exists as an entry in `user` table of database
+        if user:
+            # If their password passes verification check against the stored hash in `users`
+            if password_validation.verify_password(password, user[2]):
+                # Set the sessions' user id as the id used in `users` table
+                session['user_id'] = user[0]
+                # Send them to home page
+                return redirect(url_for('index'))
+            else:
+                return jsonify({'success': False, 'message': 'Incorrect password.'}), 401
         else:
-            return jsonify({"error": "Invalid email or password."}), 401
-    except VerifyMismatchError:
-        return jsonify({"error": "Invalid email or password."}), 401
+            return jsonify({'page': 'sign-in', 'success': False, 'email': email, 'error': 'User does not exist'}), 200
+    else:
+        return render_template('sign-in.html')
 
 @app.route('/sign-out')
 def sign_out():
+    # Pop user from the session to clear session
+    session.pop('user_id', None)
     return render_template('sign-out.html')
+
+@app.route('/sign-up', methods=['POST', 'GET'])
+def sign_up():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        hashed_password = password_validation.hash_password(password)
+        result = services.insert_user(email, hashed_password)
+
+        if result != False:
+            return redirect(url_for('sign_in'))
+
+        return jsonify({'page': 'sign-up', 'success': False, 'error': 'Account with that amail already exists!'}), 200
+    else:
+        return render_template('sign-up.html')
+
 
 # Serve manifest.json from the static folder at the root URL
 @app.route('/manifest.json')
