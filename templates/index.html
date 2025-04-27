@@ -205,89 +205,95 @@ Home - CS Learning Portal
                     {% endfor %}
                 </div>
 
+                <!-- Displaying of less relevant/partial matches -->
                 {% if related_learning_content|length > 0 %}
-                <!-- Heading for related matches -->
-                <h6 class="mt-4">Show less relevant matches</h6>
+                <!-- Button to reveal less relevant matches -->
+                <div class="mt-4">
+                    <a href="#" id="showRelatedMatches" class="btn btn-outline-secondary btn-sm">Show less relevant matches</a>
+                </div>
 
-                <!-- Related matches accordion -->
-                <div class="accordion" id="relatedAccordion">
-                    <!-- Loop through related matches dictionary items -->
-                    {% for outcome_id, outcome in related_learning_content.items() %}
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingRelated{{ loop.index }}">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRelated{{ loop.index }}" aria-expanded="false" aria-controls="collapseRelated{{ loop.index }}">
-                                {{ outcome.outcome_text }}
-                            </button>
-                        </h2>
-                        <div id="collapseRelated{{ loop.index }}" class="accordion-collapse collapse" aria-labelledby="headingRelated{{ loop.index }}" data-bs-parent="#relatedAccordion">
-                            <div class="accordion-body">
+                <!-- Related matches accordion (hidden initially) -->
+                <div id="relatedAccordionWrapper" style="display: none;">
+                    <div class="accordion mt-3" id="relatedAccordion">
+                        <!-- Explain what the UI is displaying -->
+                        <p class="text-muted small">
+                            The following matches may not be as relevant to your search...
+                        </p>
+                        {% for outcome_id, outcome in related_learning_content.items() %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingRelated{{ loop.index }}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRelated{{ loop.index }}" aria-expanded="false" aria-controls="collapseRelated{{ loop.index }}">
+                                    {{ outcome.outcome_text }}
+                                </button>
+                            </h2>
+                            <div id="collapseRelated{{ loop.index }}" class="accordion-collapse collapse" aria-labelledby="headingRelated{{ loop.index }}" data-bs-parent="#relatedAccordion">
+                                <div class="accordion-body">
 
-                                <!-- Match explanation (on hover on desktop, and on click on mobile) -->
-                                <span class="text-muted ms-2 match-info" style="cursor: help; position: relative;">
-                                    <img src="../static/assets/bootstrap/bootstrap-icons/question-circle.svg" alt="Question icon" style="width: 1em; height: 1em;">
-                                    <span class="match-tooltip">
-                                        Matched on: {{ outcome.matched_terms | join(', ') }}<br>
-                                        Match score: {{ outcome.score }} / 1.0
+                                    <!-- Match explanation -->
+                                    <span class="text-muted ms-2 match-info" style="cursor: help; position: relative;">
+                                        <img src="../static/assets/bootstrap/bootstrap-icons/question-circle.svg" alt="Question icon" style="width: 1em; height: 1em;">
+                                        <span class="match-tooltip">
+                                            Matched on: {{ outcome.matched_terms | join(', ') }}<br>
+                                            Match score: {{ outcome.score }} / 1.0
+                                        </span>
                                     </span>
-                                </span>
 
-                                <!-- Prerequisites -->
-                                {% if outcome.prerequisites %}
-                                <div class="mt-1">
-                                    <small class="text-danger fw-semibold">Before reading this, you should have covered:</small>
-                                    <ul class="mb-1">
-                                        {% for prereq in outcome.prerequisites %}
-                                        <li><a href="{{ prereq.url }}" target="_blank">{{ prereq.title }}</a></li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                                {% endif %}
+                                    <!-- Prerequisites -->
+                                    {% if outcome.prerequisites %}
+                                    <div class="mt-1">
+                                        <small class="text-danger fw-semibold">Before reading this, you should have covered:</small>
+                                        <ul class="mb-1">
+                                            {% for prereq in outcome.prerequisites %}
+                                            <li><a href="{{ prereq.url }}" target="_blank">{{ prereq.title }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
 
-                                <!-- Learning resource -->
-                                {% if outcome.learning %}
-                                <div class="mt-2">
-                                    <span class="lozenge content-type">Learning resource</span><br>
-                                    <a href="{{ outcome.learning.url }}" target="_blank" class="text-decoration-none">{{ outcome.learning.title }}</a>
-                                    {% if outcome.learning.teaser %}
-                                    <div class="text-muted small">{{ outcome.learning.teaser }}</div>
+                                    <!-- Learning resource -->
+                                    {% if outcome.learning %}
+                                    <div class="mt-2">
+                                        <span class="lozenge content-type">Learning resource</span><br>
+                                        <a href="{{ outcome.learning.url }}" target="_blank" class="text-decoration-none">{{ outcome.learning.title }}</a>
+                                        {% if outcome.learning.teaser %}
+                                        <div class="text-muted small">{{ outcome.learning.teaser }}</div>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+
+                                    <!-- Self test -->
+                                    {% if outcome.test %}
+                                    <div class="mt-2">
+                                        <span class="lozenge content-type">Self test</span><br>
+                                        <a href="{{ outcome.test.url }}" target="_blank" class="text-decoration-none">{{ outcome.test.title }}</a>
+                                        {% if outcome.test.teaser %}
+                                        <div class="text-muted small">{{ outcome.test.teaser }}</div>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+
+                                    <!-- Exam question -->
+                                    {% if outcome.exam %}
+                                    <div class="mt-2">
+                                        <span class="lozenge content-type">GCSE exam question</span><br>
+                                        <a href="{{ outcome.exam.url }}" target="_blank" class="text-decoration-none">{{ outcome.exam.title }}</a>
+                                        {% if outcome.exam.teaser %}
+                                        <div class="text-muted small">{{ outcome.exam.teaser }}</div>
+                                        {% endif %}
+                                    </div>
                                     {% endif %}
                                 </div>
-                                {% endif %}
-
-                                <!-- Self test -->
-                                {% if outcome.test %}
-                                <div class="mt-2">
-                                    <span class="lozenge content-type">Self test</span><br>
-                                    <a href="{{ outcome.test.url }}" target="_blank" class="text-decoration-none">{{ outcome.test.title }}</a>
-                                    {% if outcome.test.teaser %}
-                                    <div class="text-muted small">{{ outcome.test.teaser }}</div>
-                                    {% endif %}
-                                </div>
-                                {% endif %}
-
-                                <!-- Exam question -->
-                                {% if outcome.exam %}
-                                <div class="mt-2">
-                                    <span class="lozenge content-type">GCSE exam question</span><br>
-                                    <a href="{{ outcome.exam.url }}" target="_blank" class="text-decoration-none">{{ outcome.exam.title }}</a>
-                                    {% if outcome.exam.teaser %}
-                                    <div class="text-muted small">{{ outcome.exam.teaser }}</div>
-                                    {% endif %}
-                                </div>
-                                {% endif %}
-
                             </div>
                         </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
                 </div>
                 {% endif %}
 
                 {% else %}
                 <p class="text-muted mt-3">No results found for your query.</p>
                 {% endif %}
-                {% endif %}
-
+            {% endif %}
         </div>
 
         <!-- Right section (1/3 of the page) -->
@@ -328,6 +334,22 @@ Home - CS Learning Portal
         if (event.key === 'Enter') {
             event.preventDefault(); // Stop browser doing weird default stuff
             document.getElementById('queryForm').submit(); // Force submit the form manually
+        }
+    });
+</script>
+
+<!-- JavaScript to show related matches accordions when asked -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const showRelatedBtn = document.getElementById('showRelatedMatches');
+        const relatedWrapper = document.getElementById('relatedAccordionWrapper');
+
+        if (showRelatedBtn && relatedWrapper) {
+            showRelatedBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                relatedWrapper.style.display = 'block';
+                showRelatedBtn.style.display = 'none'; // Hide the link after clicked
+            });
         }
     });
 </script>
