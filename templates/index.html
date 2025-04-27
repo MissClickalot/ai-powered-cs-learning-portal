@@ -65,6 +65,32 @@ Home - CS Learning Portal
                         </div>
                     </div>
 
+                    <!-- Image rotation modal -->
+                    <div class="modal fade" id="rotationModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content p-4 text-center">
+                                <div class="modal-body">
+                                    <h5 class="mb-3">Please rotate your image</h5>
+
+                                    <!-- Instruction text -->
+                                    <p class="text-muted small">
+                                        Please <strong>rotate the image</strong> until it is upright and then click <strong>'Continue'</strong>.<br>
+                                        The image needs to be upright to help the AI understand the text!
+                                    </p>
+
+                                    <!-- Canvas for image preview -->
+                                    <canvas id="imagePreviewCanvas" style="max-width: 100%; max-height: 400px; border: 1px solid #ccc;"></canvas>
+
+                                    <!-- Buttons for rotating and continuing -->
+                                    <div class="mt-3">
+                                        <button type="button" id="rotateButton" class="btn btn-secondary me-2">Rotate 90°</button>
+                                        <button type="button" id="confirmRotationButton" class="btn btn-primary">Continue</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Microphone recording modal -->
                     <div class="modal fade" id="recordingModal" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
@@ -329,52 +355,136 @@ Home - CS Learning Portal
     });
 </script>
 
-<!-- -->
+<!-- JavaScript for selecting the type of image when uploading -->
 <script>
-    // Handle image uploads with user input on type (handwritten vs printed)
+    // Handle selecting 'Handwritten' or 'Printed'
     document.getElementById("chooseHandwritten").addEventListener("click", function () {
+        event.preventDefault(); // prevent form from submitting before ready
         uploadImageWithType("handwritten");
     });
 
     document.getElementById("choosePrinted").addEventListener("click", function () {
+        event.preventDefault(); // prevent form from submitting before ready
         uploadImageWithType("printed");
     });
 
+    // Variables to track uploaded file and settings
+    let uploadedImageType = null;  // Whether the user selected handwritten or printed
+    let rotation = 0;  // Current rotation angle (in degrees)
+    let canvas = null;  // The HTML canvas element where the image will be drawn
+    let ctx = null;  // The canvas 2D rendering context (object allowing me to draw on HTML canvas element)
+    let rotationModal = null;  // Reference to the Bootstrap modal for rotation
+
+    // After user selects 'Handwritten' or 'Printed'
     function uploadImageWithType(imageType) {
         if (!uploadedFile) return;
 
-        const formData = new FormData();
-        formData.append("file", uploadedFile);
-        formData.append("image_type", imageType);
+        // Save the image type
+        uploadedImageType = imageType;
 
-        // Once type is selected, send the image and type to the backend (/upload-image)
-        fetch("/upload-image", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            // DEBUG
-            console.log("Response from /upload-image:", data);
-            if (data.success) {
-                document.getElementById("userInput").value = data.text;
-                document.getElementById("useSpeech").value = "false";
-                document.getElementById("queryForm").submit();
-            } else {
-                alert("Image upload failed: " + data.message);
-            }
-        })
-        .catch(() => {
-            alert("Something went wrong during image upload.");
-        });
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = new Image();
+            img.onload = function () {
+                canvas = document.getElementById('imagePreviewCanvas');
+                ctx = canvas.getContext('2d');
+                rotation = 0;
+                drawImageRotated(img);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(uploadedFile);
 
-        // Hide modal and reset
-        const modal = bootstrap.Modal.getInstance(document.getElementById("imageTypeModal"));
-        modal.hide();
-        uploadedFile = null;
+        // Hide the handwritten/printed modal manually
+        const typeModal = bootstrap.Modal.getInstance(document.getElementById("imageTypeModal"));
+        if (typeModal) {
+            typeModal.hide();
+        }
+
+        // Show the rotation modal
+        rotationModal = new bootstrap.Modal(document.getElementById('rotationModal'));
+        rotationModal.show();
     }
-</script>
 
+    // Function to draw the image rotated
+    function drawImageRotated(img) {
+        if (rotation % 180 === 0) {
+            canvas.width = img.width;
+            canvas.height = img.height;
+        } else {
+            canvas.width = img.height;
+            canvas.height = img.width;
+        }
+
+        // Clear the canvas before drawing new rotation
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Save the context state
+        ctx.save();
+
+        // Move the origin to the centre of the canvas
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+
+        // Rotate the canvas
+        ctx.rotate(rotation * Math.PI / 180);
+
+        // Draw the image, offsetting by half width and height
+        ctx.drawImage(img, -img.width / 2, -img.height / 2);
+
+        // Restore the context to its original state
+        ctx.restore();
+    }
+
+    // Rotate button logic
+    document.getElementById("rotateButton").addEventListener("click", function () {
+        // Prevent default behaviour where clicking will cause form submission and image is uploaded too soon
+        event.preventDefault();
+        rotation = (rotation + 90) % 360;
+        const img = new Image();
+        img.onload = function () {
+            drawImageRotated(img);
+        };
+        img.src = canvas.toDataURL();
+    });
+
+    // Confirm and upload rotated image
+    document.getElementById("confirmRotationButton").addEventListener("click", function () {
+        if (!canvas) return;
+
+        canvas.toBlob(function (blob) {
+            const formData = new FormData();
+            formData.append("file", blob, "rotated_image.png");
+            formData.append("image_type", uploadedImageType);
+
+            fetch("/upload-image", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("userInput").value = data.text;
+                    document.getElementById("useSpeech").value = "false";
+
+                    const spinner = document.getElementById("loading-spinner");
+                    if (spinner) {
+                        spinner.style.display = 'block';
+                    }
+
+                    document.getElementById("queryForm").submit();
+                } else {
+                    alert("Image upload failed: " + data.message);
+                }
+            })
+            .catch(() => {
+                alert("Something went wrong during image upload.");
+            });
+
+            rotationModal.hide();
+            uploadedFile = null; // Reset
+        }, "image/png");
+    });
+</script>
 
 <!-- JavaScript for image capture (triggered if the device is mobile) to only show icon if mobile-->
 <script>
