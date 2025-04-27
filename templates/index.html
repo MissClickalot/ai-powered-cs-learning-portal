@@ -523,28 +523,20 @@ Home - CS Learning Portal
             return;
         }
 
-        const formData = new FormData();
-        formData.append("file", file); // Backend expects 'file'
+        const fileType = file.type;
 
-        fetch("/upload-image", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                document.getElementById("userInput").value = data.text;
-                document.getElementById("useSpeech").value = "false";
-                document.getElementById("queryForm").submit();
-            } else {
-                alert("Image upload failed: " + data.message);
-            }
-        })
-        .catch(() => {
-            alert("Something went wrong with image upload.");
-        });
+        // If it's an image, treat it like any other upload
+        if (fileType.startsWith("image/")) {
+            uploadedFile = file;
 
-        this.value = ""; // Reset file input
+            // Show 'Handwritten' or 'Printed' modal
+            const modal = new bootstrap.Modal(document.getElementById('imageTypeModal'));
+            modal.show();
+        } else {
+            alert("Unsupported file type from camera. Please try again.");
+        }
+
+        this.value = ""; // Reset file input after handling
     });
 </script>
 
