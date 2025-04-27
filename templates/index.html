@@ -65,6 +65,21 @@ Home - CS Learning Portal
                         </div>
                     </div>
 
+                    <!-- Microphone recording modal -->
+                    <div class="modal fade" id="recordingModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content p-4 text-center">
+                                <div class="modal-body">
+                                    <div class="spinner-border text-primary mb-3" role="status">
+                                        <span class="visually-hidden">Recording...</span>
+                                    </div>
+                                    <h5>Recording...</h5>
+                                    <p class="small text-muted">Please speak clearly.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Microphone -->
                     <a id="micButton" class="link-dark" title="Click to speak your question aloud" data-bs-toggle="tooltip" style="cursor: pointer;">
                         <img src="../static/assets/bootstrap/bootstrap-icons/mic-fill.svg" alt="Microphone icon" style="width: 2em; height: 2em;">
@@ -212,12 +227,20 @@ Home - CS Learning Portal
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         recognition.lang = "en-US"; // Set language
 
+        // Create the modal object
+        const recordingModal = new bootstrap.Modal(document.getElementById('recordingModal'));
+
         recognition.onstart = function() {
             console.log("Listening...");
+            recordingModal.show(); // Show the recording popup
         };
 
         recognition.onspeechend = function() {
             recognition.stop();
+        };
+
+        recognition.onend = function() {
+            recordingModal.hide(); // Hide the recording popup
         };
 
         recognition.onresult = function(event) {
@@ -229,6 +252,12 @@ Home - CS Learning Portal
 
             // Indicate speech input was used
             document.getElementById("useSpeech").value = "true";
+
+            // Show loading spinner manually
+            const spinner = document.getElementById("loading-spinner");
+            if (spinner) {
+                spinner.style.display = 'block';
+            }
 
             // Auto-submit form
             document.getElementById("queryForm").submit();
