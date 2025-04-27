@@ -89,14 +89,16 @@ def index():
         except Exception as e:
             print("Unexpected NLP error:", e)
             return render_template('index.html', hyperlinked_learning_content={}, query_submitted=True)
-        strong = matches["strong_matches"]
-        related = matches["related_matches"]
+        strong_ids = [item['outcome_id'] for item in matches["strong_matches"]]
+        related_ids = [item['outcome_id'] for item in matches["related_matches"]]
         metadata = matches["metadata"]
 
         # Step 4: Fetch all content types in parallel
-        learning = processor.get_learning_content(strong + related, "learning-by-outcome", headers, metadata)
-        testing = processor.get_learning_content(strong + related, "self-test-by-outcome", headers, metadata)
-        exams = processor.get_learning_content(strong + related, "gcse-questions-by-outcome", headers, metadata)
+        outcomes_list = [{"outcome_id": oid} for oid in strong_ids + related_ids]
+
+        learning = processor.get_learning_content(outcomes_list, "learning-by-outcome", headers, metadata)
+        testing = processor.get_learning_content(outcomes_list, "self-test-by-outcome", headers, metadata)
+        exams = processor.get_learning_content(outcomes_list, "gcse-questions-by-outcome", headers, metadata)
 
         # Step 5: Enrich content with metadata
         learning_dict = processor.get_hyperlinked_content(learning, metadata)
@@ -135,10 +137,17 @@ def index():
         for item in exams_dict.values():
             insert(item, "exam")
 
-        # Pass the full merged object or just the learning part depending on how index.html handles it
-        hyperlinked_learning_content = merged
+        # Split merged into strong and related
+        strong_learning_content = {oid: merged[oid] for oid in strong_ids if oid in merged}
+        related_learning_content = {oid: merged[oid] for oid in related_ids if oid in merged}
 
-        return render_template('index.html', hyperlinked_learning_content=hyperlinked_learning_content, query_submitted=True)
+        # Pass strong and related matches
+        return render_template(
+            'index.html',
+            strong_learning_content=strong_learning_content,
+            related_learning_content=related_learning_content,
+            query_submitted=True
+        )
 
     # GET method fallback
     return render_template('index.html', hyperlinked_learning_content={}, query_submitted=False)
