@@ -107,7 +107,7 @@ Home - CS Learning Portal
                     </div>
 
                     <!-- Microphone -->
-                    <a id="micButton" class="link-dark" title="Click to speak your question aloud" data-bs-toggle="tooltip" style="cursor: pointer;">
+                    <a id="micButton" class="link-dark" role="button" title="Click to speak your question aloud" data-bs-toggle="tooltip" style="cursor: pointer;">
                         <img src="../static/assets/bootstrap/bootstrap-icons/mic-fill.svg" alt="Microphone icon" style="width: 2em; height: 2em;">
                     </a>
                 </div>
@@ -247,18 +247,19 @@ Home - CS Learning Portal
 {% block scripts %}
 <!-- JavaScript for speech to text -->
 <script>
-    document.getElementById("micButton").addEventListener("click", function(event) {
-        event.preventDefault(); // Prevent default action
+    const micButton = document.getElementById("micButton");
+
+    function startSpeechRecognition(event) {
+        event.preventDefault(); // Always prevent default action
 
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.lang = "en-US"; // Set language
+        recognition.lang = "en-US";
 
-        // Create the modal object
         const recordingModal = new bootstrap.Modal(document.getElementById('recordingModal'));
 
         recognition.onstart = function() {
             console.log("Listening...");
-            recordingModal.show(); // Show the recording popup
+            recordingModal.show();
         };
 
         recognition.onspeechend = function() {
@@ -266,31 +267,30 @@ Home - CS Learning Portal
         };
 
         recognition.onend = function() {
-            recordingModal.hide(); // Hide the recording popup
+            recordingModal.hide();
         };
 
         recognition.onresult = function(event) {
             const transcript = event.results[0][0].transcript;
             console.log("Recognised Speech:", transcript);
 
-            // Fill input with speech-to-text result
             document.getElementById("userInput").value = transcript;
-
-            // Indicate speech input was used
             document.getElementById("useSpeech").value = "true";
 
-            // Show loading spinner manually
             const spinner = document.getElementById("loading-spinner");
             if (spinner) {
                 spinner.style.display = 'block';
             }
 
-            // Auto-submit form
             document.getElementById("queryForm").submit();
         };
 
         recognition.start();
-    });
+    }
+
+    // Listen to both click and touchstart
+    micButton.addEventListener("click", startSpeechRecognition);
+    micButton.addEventListener("touchstart", startSpeechRecognition);
 </script>
 
 <!-- JavaScript to trigger the hidden file input when the paperclip is clicked -->
