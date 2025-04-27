@@ -72,6 +72,14 @@ Home - CS Learning Portal
                 </div>
             </form>
 
+            <!-- Bootstrap loading spinner (hidden by default) -->
+            <div id="loading-spinner" style="display: none; text-align: center; margin-top: 20px;">
+                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Loading, please wait...</p>
+            </div>
+
             <!-- Learning search results -->
             {% if hyperlinked_learning_content %}
             <h5 class="mt-4">I recommend these resources:</h5>
@@ -428,6 +436,20 @@ Home - CS Learning Portal
                 });
             });
         }
+    });
+</script>
+
+<!-- JavaScript to show spinner when form is submitted -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('queryForm');
+      const spinner = document.getElementById('loading-spinner');
+
+      if (form && spinner) {
+        form.addEventListener('submit', function() {
+          spinner.style.display = 'block';
+        });
+      }
     });
 </script>
 {% endblock %}
