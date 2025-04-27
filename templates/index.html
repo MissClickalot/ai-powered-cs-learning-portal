@@ -14,15 +14,15 @@ Home - CS Learning Portal
             <p>Try asking 'What is binary?' or 'How do loops work in Python?'</p>
 
             <!-- Form row: input and icons -->
-            <form id="queryForm" action="/" method="POST" class="d-flex align-items-center mt-4">
+            <form id="queryForm" action="/" method="POST" class="d-flex flex-column flex-md-row align-items-center mt-4">
                 <!-- Text input -->
-                <input id="userInput" class="form-control form-control-lg me-3" name="user_input" type="text" placeholder="What in Computer Science don't you understand?" spellcheck="true">
+                <input id="userInput" class="form-control form-control-lg flex-grow-1 mb-2 mb-md-0 me-md-3" name="user_input" type="text" placeholder="What in Computer Science don't you understand?" spellcheck="true">
 
                 <!-- Hidden field to indicate if speech was used -->
                 <input type="hidden" name="use_speech" id="useSpeech" value="false">
 
                 <!-- Input icons container -->
-                <div class="d-flex icon-bar gap-2 mt-2">
+                <div class="d-flex icon-bar gap-2 mobile-move-under">
 
                     <!-- Search history -->
                     <a href="/history" class="link-secondary" title="View your search history" data-bs-toggle="tooltip">

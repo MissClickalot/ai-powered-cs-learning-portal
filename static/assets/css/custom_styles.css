@@ -53,3 +53,17 @@
 .match-info.show-tooltip .match-tooltip {
     display: block;
 }
+
+/* Move icons under query box on mobile */
+@media (max-width: 576px) {
+    .mobile-move-under {
+        flex-wrap: wrap; /* Allow icons to wrap if needed */
+        justify-content: center; /* Centre icons horizontally */
+        margin-top: 10px; /* Add a little spacing */
+    }
+
+    .mobile-move-under a,
+    .mobile-move-under button {
+        margin-top: 5px; /* Small gap between rows if icons wrap */
+    }
+}
