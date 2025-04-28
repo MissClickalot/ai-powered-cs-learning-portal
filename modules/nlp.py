@@ -68,7 +68,7 @@ CONCEPT_ALIASES = {
 }
 
 # Whitelist of words that TextBlob is incorrectly changing - add to list as more appear in testing
-COMMON_WORDS = {"what", "denary"}
+COMMON_WORDS = {"what", "denary", "decimal"}
 
 def correct_spelling(text: str) -> str:
     corrected_words = []
