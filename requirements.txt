@@ -1,0 +1,14 @@
+argon2-cffi
+easyocr
+Flask
+numpy
+opencv-python
+python-dotenv
+PyMuPDF
+requests
+sentence-transformers
+spacy
+sounddevice
+textblob
+vosk
+Werkzeug
