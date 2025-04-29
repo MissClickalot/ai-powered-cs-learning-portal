@@ -1,6 +1,13 @@
+import os
 import sqlite3
 
 # Connect to SQLite database
+# Check if database already exists
+if os.path.exists("database.db"):
+    print("Database already exists. Skipping creation.")
+    exit()
+
+# Otherwise, create the database
 conn = sqlite3.connect("database.db")
 cursor = conn.cursor()
 

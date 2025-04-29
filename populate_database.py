@@ -5,7 +5,7 @@ conn = sqlite3.connect("database.db")
 cursor = conn.cursor()
 
 """
-TABLE FIELDS
+TABLES AND THEIR FIELDS
 
 query_history
 id, user_id, query_string, extracted_meaning
@@ -38,7 +38,6 @@ syllabus_categories
 id, category_title
 """
 
-"""
 # Insert into `avatars`
 avatars_data = [
     ("Augustus De Morgan", "static/avatars/augustus_de_morgan.png"),
@@ -54,18 +53,14 @@ avatars_data = [
 ]
 # The id field will be handled by SQLite automatically
 cursor.executemany("INSERT INTO avatars (avatar_name, file_reference) VALUES (?, ?)", avatars_data)
-"""
 
-"""
 # Insert into `syllabus_categories`
 syllabus_categories_data = [("Computer systems",), ("Data representation",), ("Boolean logic",), ("Algorithmic thinking",),
                             ("Programming",), ("Databases",), ("Productivity software",), ("Solution development",),
                             ("Testing",), ("Computer networks",), ("Security",), ("Impacts",), ("Digital authoring",), ("Electronics",)]
 # The id field will be handled by SQLite automatically
 cursor.executemany("INSERT INTO syllabus_categories (category_title) VALUES (?)", syllabus_categories_data)
-"""
 
-"""
 # Insert into `local_resources`
 local_resources_data = [
     # Computer systems
@@ -95,9 +90,7 @@ local_resources_data = [
     ("static/resources/artificial-intelligence-basics-ebook.pdf", 12)
 ]
 cursor.executemany("INSERT INTO local_resources (file_reference, syllabus_categories_id) VALUES (?, ?)", local_resources_data)
-"""
 
-"""
 # Insert into `news_categories`
 news_categories_data = [
     ("Artificial Intelligence",),
@@ -111,9 +104,7 @@ news_categories_data = [
 ]
 # The id field will be handled by SQLite automatically
 cursor.executemany("INSERT INTO news_categories (news_category_title) VALUES (?)", news_categories_data)
-"""
 
-"""
 # Create indexes separately in SQLite to establish relationships
 cursor.execute("CREATE INDEX IF NOT EXISTS idx_user_profiles_avatars ON user_profiles (avatars_id);")
 cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_profiles ON users (user_profiles_id);")
@@ -122,7 +113,6 @@ cursor.execute("CREATE INDEX IF NOT EXISTS idx_local_resources_categories ON loc
 cursor.execute("CREATE INDEX IF NOT EXISTS idx_query_result_history ON query_result_history (query_history_id);")
 cursor.execute("CREATE INDEX IF NOT EXISTS idx_news_preferences_categories ON news_preferences (news_categories_id);")
 cursor.execute("CREATE INDEX IF NOT EXISTS idx_news_preferences_users ON news_preferences (user_preferences_id);")
-"""
 
 # Commit
 conn.commit()
