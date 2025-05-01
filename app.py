@@ -12,10 +12,6 @@ from modules import categorised_learning_materials  # Import own code to get off
 from modules import pdf_to_text  # Import own PDF to text code
 from modules import image_to_text  # Import own image to text (OCR) code
 from modules import services # Import own code to interact with database
-import spacy
-from enum import verify
-import queue
-from select import select
 
 # Create an instance of the Flask class for the app
 app = Flask(__name__)
@@ -32,15 +28,6 @@ ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg'}
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-# Function to get user by email from the database
-def get_user_by_email(email = "evie.paige.anderson@gmail.com"):
-    conn = sqlite3.connect("database.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, email, password_hash FROM users WHERE email = ?", (email,))
-    user = cursor.fetchone()  # Returns (id, email, password_hash) or None
-    conn.close()
-    return user # Returns a tuple (id, email, password_hash) or None
 
 # Define a route for the root URL
 @app.route('/', methods=['GET', 'POST'])
